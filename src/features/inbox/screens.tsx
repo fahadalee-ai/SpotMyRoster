@@ -75,6 +75,7 @@ export function SearchScreen() {
   return (
     <Page title="Search">
       <form
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           if (query.trim()) addRecentSearch(query.trim());

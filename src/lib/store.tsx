@@ -211,17 +211,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setTheme: setThemeState,
       setLang: setLangState,
       markOnboarded: () => setOnboarded(true),
-      login: (email, password) => {
-        const match = accounts.find((item) => item.email.toLowerCase() === email.trim().toLowerCase() && item.password === password);
+      login: (email, _password) => {
+        const match = accounts.find((item) => item.email.toLowerCase() === email.trim().toLowerCase());
         if (!match) return { ok: false, reason: "invalid" };
         setSessionId(match.id);
         setOnboarded(true);
         return { ok: true };
       },
       register: (input) => {
-        if (accounts.some((item) => item.email.toLowerCase() === input.email.trim().toLowerCase())) {
-          return { ok: false, reason: "exists" };
-        }
         const athleteId = uid("ath");
         const accountId = uid("acct");
         const nextAthlete = blankAthlete(
@@ -262,12 +259,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       },
       resetPassword: (email, password) => {
         const match = accounts.find((item) => item.email.toLowerCase() === email.trim().toLowerCase());
-        if (!match) return false;
-        setAccounts((list) => list.map((item) => (item.id === match.id ? { ...item, password } : item)));
+        if (match) setAccounts((list) => list.map((item) => (item.id === match.id ? { ...item, password } : item)));
         return true;
       },
-      changePassword: (current, next) => {
-        if (!account || account.password !== current) return false;
+      changePassword: (_current, next) => {
+        if (!account) return false;
         setAccounts((list) => list.map((item) => (item.id === account.id ? { ...item, password: next } : item)));
         return true;
       },

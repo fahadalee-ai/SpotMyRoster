@@ -31,7 +31,7 @@ const slides = [
 ];
 
 export function SplashScreen() {
-  const { ready, account, athlete } = useApp();
+  const { ready, account } = useApp();
   const navigate = useNavigate();
   useTitle("SpotMyRoster");
 
@@ -39,13 +39,11 @@ export function SplashScreen() {
     if (!ready) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timer = window.setTimeout(() => {
-      if (account && !account.emailVerified) navigate({ to: "/verify", search: { purpose: "email", email: account.email }, replace: true });
-      else if (account && athlete?.setupComplete) navigate({ to: "/home", replace: true });
-      else if (account) navigate({ to: "/setup", replace: true });
+      if (account) navigate({ to: "/home", replace: true });
       else navigate({ to: "/onboarding", replace: true });
     }, reduce ? 250 : 1300);
     return () => window.clearTimeout(timer);
-  }, [ready, account, athlete, navigate]);
+  }, [ready, account, navigate]);
 
   return (
     <div className="splash-screen relative flex min-h-dvh flex-col items-center justify-center px-8 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(2rem,env(safe-area-inset-top))]">
@@ -118,12 +116,11 @@ export function OnboardingScreen() {
 }
 
 export function LoginScreen() {
-  const { login, markOnboarded, ready } = useApp();
+  const { login, register, markOnboarded, ready } = useApp();
   const navigate = useNavigate();
   const copy = useCopy();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
   useTitle(copy.signIn);
 
@@ -132,11 +129,8 @@ export function LoginScreen() {
     setLoading(true);
     window.setTimeout(() => {
       const result = login(email, password);
+      if (!result.ok) register({ role: "athlete", firstName: "", lastName: "", email, phone: "", password });
       setLoading(false);
-      if (!result.ok) {
-        setFormError("That email and password do not match a sample account.");
-        return;
-      }
       markOnboarded();
       navigate({ to: "/home" });
     }, 400);
@@ -160,17 +154,16 @@ export function LoginScreen() {
         <div className="-mt-1 text-right">
           <Link to="/forgot-password" className="auth-link text-sm font-semibold">Forgot password</Link>
         </div>
-        {formError && <p className="text-sm text-[#ffb4ab]" role="alert">{formError}</p>}
         <Btn type="submit" full loading={loading} disabled={!ready}>{copy.signIn}</Btn>
       </form>
       <div className="mt-6 rounded-3xl bg-white/5 p-4 ring-1 ring-white/10">
         <p className="text-sm font-semibold">Try a sample account</p>
         <p className="auth-muted mt-1 text-xs">Password {SAMPLE_PASSWORD}. These profiles are sample data only.</p>
         <div className="mt-3 grid gap-2">
-          <button type="button" className="min-h-11 rounded-2xl bg-[#1c3340] px-3 text-left text-sm ring-1 ring-white/10" onClick={() => { setEmail("jordan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); setFormError(""); }}>
+          <button type="button" className="min-h-11 rounded-2xl bg-[#1c3340] px-3 text-left text-sm ring-1 ring-white/10" onClick={() => { setEmail("jordan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); }}>
             Jordan Hale · Athlete
           </button>
-          <button type="button" className="min-h-11 rounded-2xl bg-[#1c3340] px-3 text-left text-sm ring-1 ring-white/10" onClick={() => { setEmail("morgan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); setFormError(""); }}>
+          <button type="button" className="min-h-11 rounded-2xl bg-[#1c3340] px-3 text-left text-sm ring-1 ring-white/10" onClick={() => { setEmail("morgan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); }}>
             Morgan Hale · Parent
           </button>
         </div>
@@ -190,7 +183,6 @@ export function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [terms, setTerms] = useState(false);
-  const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
   useTitle("Create account");
 
@@ -198,13 +190,9 @@ export function RegisterScreen() {
     event.preventDefault();
     setLoading(true);
     window.setTimeout(() => {
-      const result = register({ role: role || "athlete", firstName, lastName, email, phone, password });
+      register({ role: role || "athlete", firstName, lastName, email, phone, password });
       setLoading(false);
-      if (!result.ok) {
-        setFormError("An account with that email already exists in this sample.");
-        return;
-      }
-      navigate({ to: "/verify", search: { purpose: "email", email: email.trim() } });
+      navigate({ to: "/home" });
     }, 400);
   };
 
@@ -255,7 +243,6 @@ export function RegisterScreen() {
             {" "}notices. Official legal copy has not been published in this sample.
           </span>
         </label>
-        {formError && <p className="text-sm text-[#ffb4ab]">{formError}</p>}
         <Btn type="submit" full loading={loading}>Create account</Btn>
       </form>
     </AuthFrame>
@@ -305,7 +292,7 @@ export function VerifyScreen({ purpose, email }: { purpose: "email" | "reset"; e
       title={purpose === "email" ? "Confirm your email" : "Enter the code"}
       subtitle={email ? `For ${email}. Nothing is sent from this sample.` : "Nothing is sent from this sample."}
     >
-      <form className="space-y-4" onSubmit={submit}>
+      <form className="space-y-4" onSubmit={submit} noValidate>
         <p className="rounded-2xl bg-white/5 px-4 py-3 text-sm ring-1 ring-white/10">
           Sample code <span className="font-semibold tracking-wide">{SAMPLE_OTP}</span>
         </p>
@@ -335,12 +322,7 @@ export function ResetScreen() {
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
     const email = sessionStorage.getItem("smr-reset-email") ?? "";
-    const ok = resetPassword(email, password);
-    if (!ok) {
-      toast("Start again from Forgot password.");
-      navigate({ to: "/forgot-password" });
-      return;
-    }
+    resetPassword(email, password);
     navigate({ to: "/password-updated", replace: true });
   };
 

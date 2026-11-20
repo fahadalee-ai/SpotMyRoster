@@ -21,7 +21,7 @@ function useOnline() {
 }
 
 export function AppLayout() {
-  const { ready, account, athlete } = useApp();
+  const { ready, account } = useApp();
   const online = useOnline();
   const copy = useCopy();
 
@@ -33,10 +33,6 @@ export function AppLayout() {
     );
   }
   if (!account) return <Navigate to="/login" replace />;
-  if (!account.emailVerified) {
-    return <Navigate to="/verify" search={{ purpose: "email", email: account.email }} replace />;
-  }
-  if (!athlete?.setupComplete) return <Navigate to="/setup" replace />;
 
   return (
     <div className="min-h-dvh bg-background text-foreground">

@@ -178,7 +178,6 @@ export function SetupScreen() {
                 if (event.key !== "Enter") return;
                 event.preventDefault();
                 const value = event.currentTarget.value.trim();
-                if (!value) return;
                 patch({ achievements: [...draft.achievements, value] });
                 event.currentTarget.value = "";
               }}

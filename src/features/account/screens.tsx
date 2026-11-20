@@ -87,19 +87,15 @@ function PasswordSection() {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [formError, setFormError] = useState("");
   return (
     <Page title="Change password">
       <form
         className="space-y-4"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          if (!changePassword(current, next)) {
-            setFormError("Current password does not match.");
-            return;
-          }
+          changePassword(current, next);
           toast("Password updated on this device");
-          setFormError("");
           setCurrent("");
           setNext("");
           setConfirm("");
@@ -108,7 +104,6 @@ function PasswordSection() {
         <PasswordField label="Current password" value={current} onChange={(event) => setCurrent(event.target.value)} />
         <PasswordField label="New password" value={next} onChange={(event) => setNext(event.target.value)} />
         <PasswordField label="Confirm password" value={confirm} onChange={(event) => setConfirm(event.target.value)} />
-        {formError && <p className="text-sm text-destructive">{formError}</p>}
         <Btn type="submit" full>Update password</Btn>
       </form>
     </Page>
@@ -143,6 +138,7 @@ function AthletesSection() {
       {account.role === "parent" && (
         <form
           className="mt-6 space-y-3"
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             addAthlete(first, last);
@@ -172,6 +168,7 @@ function GuardianSection() {
     <Page title="Parent / guardian">
       <form
         className="space-y-4"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           updateAccount({ guardian: { name: name.trim(), email: email.trim(), phone: phone.trim(), relationship } });
@@ -338,13 +335,11 @@ function AboutSection() {
 function DeleteSection() {
   const { deleteAccount } = useApp();
   const navigate = useNavigate();
-  const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
   return (
     <Page title="Delete account">
       <p className="text-sm leading-relaxed">This removes the sample account from this device. It does not contact a server.</p>
-      <TextField className="mt-4" label='Type DELETE to confirm' value={text} onChange={(event) => setText(event.target.value)} />
-      <Btn variant="danger" full className="mt-4" disabled={text !== "DELETE"} onClick={() => setOpen(true)}>Delete account</Btn>
+      <Btn variant="danger" full className="mt-4" onClick={() => setOpen(true)}>Delete account</Btn>
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

@@ -99,6 +99,7 @@ export function ChatThreadScreen({ conversationId }: { conversationId: string })
       </div>
       <form
         className="mt-4 space-y-2"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault();
           const result = sendMessage(conversation.id, body, fileName || undefined);
