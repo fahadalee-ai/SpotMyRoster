@@ -440,15 +440,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
       },
       setLessonProgress: (courseId, lessonId, value) => {
         if (!athlete) return;
-        setEnrollments((list) =>
-          list.map((item) => {
-            if (item.courseId !== courseId || item.athleteId !== athlete.id) return item;
+        setEnrollments((list) => {
+          const existing = list.some((item) => item.courseId === courseId && item.athleteId === athlete.id);
+          const apply = (item: Enrollment): Enrollment => {
             const progress = { ...item.progress, [lessonId]: value };
             const completed = new Set(item.completedLessonIds);
             if (value >= 100) completed.add(lessonId);
             return { ...item, progress, completedLessonIds: [...completed] };
-          }),
-        );
+          };
+          if (!existing) {
+            return [...list, apply({ courseId, athleteId: athlete.id, completedLessonIds: [], progress: {} })];
+          }
+          return list.map((item) => (item.courseId === courseId && item.athleteId === athlete.id ? apply(item) : item));
+        });
       },
       rateCourse: (courseId, rating, review) => {
         if (!athlete) return;

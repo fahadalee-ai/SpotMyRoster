@@ -8,7 +8,7 @@ import type { TeamFilters } from "@/lib/types";
 import { formatShort, mapsUrl, shareOrCopy } from "@/lib/format";
 import { teamCover } from "@/lib/images";
 import { TeamCard } from "@/components/athlete/cards";
-import { Badge, BottomSheet, Btn, CardSkeleton, Chip, EmptyState, ErrorState, IconButton, Page, PullToRefresh, SearchField, useListState, useTitle } from "@/components/athlete/ui";
+import { Badge, BottomSheet, Btn, CardSkeleton, Chip, ChipRow, EmptyState, ErrorState, IconButton, Page, PullToRefresh, SearchField, useListState, useTitle } from "@/components/athlete/ui";
 
 const initialFilters: TeamFilters = {
   q: "",
@@ -74,13 +74,13 @@ export function TeamsScreen() {
       <PullToRefresh onRefresh={list.refresh}>
         <SearchField value={filters.q} onChange={(q) => setFilters((current) => ({ ...current, q }))} placeholder="Team, city, or position" />
         <p className="mt-2 text-xs text-muted-foreground">Distances are sample miles from Naperville, not live location.</p>
-        <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        <ChipRow className="mt-3">
           {(["distance", "deadline", "spots"] as const).map((sort) => (
             <Chip key={sort} selected={filters.sort === sort} onClick={() => setFilters((current) => ({ ...current, sort }))}>
               {sort === "distance" ? "Nearest" : sort === "deadline" ? "Deadline" : "Most spots"}
             </Chip>
           ))}
-        </div>
+        </ChipRow>
         <div className="mt-4 space-y-3">
           {list.loading && <CardSkeleton />}
           {!list.loading && list.error && <ErrorState title="Teams didn’t load" body="Pull to refresh when you are back online." onRetry={list.refresh} />}

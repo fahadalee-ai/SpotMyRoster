@@ -1,6 +1,6 @@
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Eye, EyeOff, Loader2, Search, X } from "lucide-react";
-import { useEffect, useId, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
+import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { images } from "@/lib/images";
 import { useApp } from "@/lib/store";
@@ -147,7 +147,7 @@ export function Page({
   return (
     <div className="min-h-dvh">
       <TopBar title={title} back={back} right={right} />
-      <div className={cn("px-5 pb-28", className)}>{children}</div>
+      <div className={cn("min-w-0 px-5 pb-28", className)}>{children}</div>
     </div>
   );
 }
@@ -307,7 +307,7 @@ export function Chip({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "inline-flex min-h-11 items-center rounded-full px-3 text-sm font-semibold ring-1",
+        "inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-3.5 text-sm font-semibold ring-1",
         selected ? "bg-primary text-primary-foreground ring-transparent" : "bg-elevated text-foreground ring-border",
       )}
     >
@@ -316,9 +316,39 @@ export function Chip({
   );
 }
 
+export function ChipRow({ children, className }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const lastSelected = useRef("");
+
+  useEffect(() => {
+    const root = ref.current;
+    const selected = root?.querySelector<HTMLElement>("[aria-pressed='true']");
+    if (!root || !selected) return;
+    const key = selected.textContent ?? "";
+    if (key === lastSelected.current) return;
+    lastSelected.current = key;
+    const start = selected.offsetLeft;
+    const end = start + selected.offsetWidth;
+    if (start < root.scrollLeft) root.scrollLeft = Math.max(0, start - 8);
+    else if (end > root.scrollLeft + root.clientWidth) root.scrollLeft = end - root.clientWidth + 8;
+  });
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex w-full min-w-0 max-w-full gap-2 overflow-x-auto overscroll-x-contain pb-1 no-scrollbar",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function Badge({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-[0.75rem] font-semibold", className)}>
+    <span className={cn("inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2.5 py-1 text-[0.75rem] font-semibold", className)}>
       {children}
     </span>
   );

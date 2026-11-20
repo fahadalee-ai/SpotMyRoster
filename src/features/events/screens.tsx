@@ -6,7 +6,7 @@ import { events } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import { downloadIcs, formatWhen, mapsUrl } from "@/lib/format";
 import { EventCard } from "@/components/athlete/cards";
-import { BottomSheet, Btn, Chip, EmptyState, ErrorState, Page, PullToRefresh, useListState } from "@/components/athlete/ui";
+import { BottomSheet, Btn, Chip, ChipRow, EmptyState, ErrorState, Page, PullToRefresh, useListState } from "@/components/athlete/ui";
 
 export function EventsScreen() {
   const list = useListState();
@@ -24,11 +24,11 @@ export function EventsScreen() {
 
   return (
     <Page title="Events" back={false} right={<button type="button" className="min-h-11 text-sm font-semibold text-link" onClick={() => setFiltersOpen(true)}>Filters</button>}>
-      <div className="mb-4 flex flex-wrap gap-2">
+      <ChipRow className="mb-4">
         <Chip selected={mode === "list"} onClick={() => setMode("list")}>List</Chip>
         <Chip selected={mode === "calendar"} onClick={() => setMode("calendar")}>Calendar</Chip>
-        <Link to="/events/mine" className="inline-flex min-h-11 items-center rounded-full bg-elevated px-3 text-sm font-semibold ring-1 ring-border">My events</Link>
-      </div>
+        <Link to="/events/mine" className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full bg-elevated px-3.5 text-sm font-semibold ring-1 ring-border">My events</Link>
+      </ChipRow>
       <PullToRefresh onRefresh={list.refresh}>
         {list.loading && <div className="h-40 animate-pulse rounded-3xl bg-muted" />}
         {list.error && <ErrorState title="Events didn’t load" body="Try again when you are online." onRetry={list.refresh} />}

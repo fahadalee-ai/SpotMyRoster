@@ -17,7 +17,7 @@ export function TeamCard({ team, opening }: { team: Team; opening?: Opening }) {
       <img src={teamCover(team.id)} alt="" className="h-36 w-full object-cover" />
       <div className="space-y-2 p-4">
         <div className="flex items-start justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <h3 className="font-display text-lg font-semibold leading-tight">{team.name}</h3>
             <p className="text-sm text-muted-foreground">
               {team.sport} · {team.ageGroup} · {team.gender}
@@ -91,7 +91,7 @@ export function ApplicationRow({ application }: { application: Application }) {
       className="block rounded-3xl bg-card p-4 ring-1 ring-border"
     >
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <h3 className="font-semibold">{team?.name ?? "Team"}</h3>
           <p className="text-sm text-muted-foreground">
             {application.position} · {formatShort(application.createdAt)}

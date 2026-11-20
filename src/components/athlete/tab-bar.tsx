@@ -46,18 +46,20 @@ export function TabBar() {
                 to={tab.to}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex min-h-16 flex-col items-center justify-center gap-1 text-[0.7rem] font-semibold",
+                  "relative flex min-h-16 min-w-0 flex-col items-center justify-center gap-1 px-1 text-[0.7rem] font-semibold",
                   active ? (theme === "light" ? "text-foreground" : "text-primary") : "text-muted-foreground",
                 )}
               >
                 {active && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-primary" />}
-                <Icon size={20} strokeWidth={active ? 2.4 : 1.8} />
-                <span>{label}</span>
-                {tab.to === "/chat" && unread > 0 && (
-                  <span className="absolute right-4 top-2 inline-flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-                    {unread}
-                  </span>
-                )}
+                <span className="relative">
+                  <Icon size={20} strokeWidth={active ? 2.4 : 1.8} />
+                  {tab.to === "/chat" && unread > 0 && (
+                    <span className="absolute -right-2 -top-1 inline-flex min-h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold leading-none text-primary-foreground">
+                      {unread}
+                    </span>
+                  )}
+                </span>
+                <span className="max-w-full truncate">{label}</span>
               </Link>
             </li>
           );

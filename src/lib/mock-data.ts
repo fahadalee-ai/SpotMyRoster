@@ -270,7 +270,14 @@ export const events: SportEvent[] = [
   },
 ];
 
-const lesson = (id: string, title: string, minutes: number, summary: string) => ({ id, title, minutes, summary });
+const lesson = (id: string, title: string, minutes: number, summary: string, points: string[], practice: string) => ({
+  id,
+  title,
+  minutes,
+  summary,
+  points,
+  practice,
+});
 
 export const courses: Course[] = [
   {
@@ -284,10 +291,54 @@ export const courses: Course[] = [
     image: "approach",
     summary: "A short course on seeing the ball, planning an at-bat, and keeping a repeatable stance. Built for travel baseball athletes and the families who help them practice.",
     lessons: [
-      lesson("l1", "What the first pitch is for", 8, "How to use the first pitch to learn a pitcher’s mix without swinging at everything."),
-      lesson("l2", "A stance you can repeat", 12, "Feet, hands, and a quiet head. Practice cues you can use in a cage."),
-      lesson("l3", "Counting yourself through an at-bat", 10, "A simple count plan for ahead, behind, and two-strike at-bats."),
-      lesson("l4", "Cage work between tournaments", 12, "A 20-minute plan that does not need a full staff."),
+      lesson(
+        "l1",
+        "What the first pitch is for",
+        8,
+        "Use the first pitch to learn a pitcher’s mix without swinging at everything.",
+        [
+          "Watch the first pitch to the catcher’s mitt. Note speed and location before you decide to swing.",
+          "If it is a strike you can drive, swing. If it is a chase pitch, take it and remember the shape.",
+          "Tell yourself one sentence in the box: the pitch you are hunting.",
+        ],
+        "In the cage, take the first pitch of five rounds on purpose. Say out loud what it was before the next swing.",
+      ),
+      lesson(
+        "l2",
+        "A stance you can repeat",
+        12,
+        "Feet, hands, and a quiet head. These are the cues to use in a cage.",
+        [
+          "Feet a little wider than your shoulders, weight balanced, not on the toes.",
+          "Hands near the back shoulder, barrel quiet, eyes level.",
+          "Same setup every pitch. Change the plan, not the stance, when the count changes.",
+        ],
+        "Film five swings from the side. Check that the feet and hands start in the same place each time.",
+      ),
+      lesson(
+        "l3",
+        "Counting yourself through an at-bat",
+        10,
+        "A simple count plan for ahead, behind, and two-strike at-bats.",
+        [
+          "Ahead in the count: look for one pitch in one zone.",
+          "Behind in the count: shorten the swing and put the ball in play.",
+          "Two strikes: protect the plate and still swing at a pitch you can drive.",
+        ],
+        "Call the count out loud for ten pitches. Name the plan before the pitch is thrown.",
+      ),
+      lesson(
+        "l4",
+        "Cage work between tournaments",
+        12,
+        "A 20-minute plan that does not need a full staff.",
+        [
+          "Five minutes of setup and dry swings.",
+          "Ten swings on the first-pitch plan, then ten on a two-strike plan.",
+          "Write one sentence after the round about what stayed the same.",
+        ],
+        "Run this plan once between tournament weekends. Keep the note with the at-bat checklist.",
+      ),
     ],
     resources: [
       { name: "At-bat checklist.txt", body: "Sample checklist\n1. Know the situation before you walk up.\n2. Breathe in the box.\n3. Hunt one pitch early.\n4. Shorten up with two strikes.\n5. Write one sentence after the game about the plan." },
@@ -304,10 +355,54 @@ export const courses: Course[] = [
     image: "discover",
     summary: "Footwork for ground balls and a clean exchange. Aimed at softball athletes who already play infield and want a clearer first step.",
     lessons: [
-      lesson("l5", "Reading the hop", 9, "How to judge a short hop versus a long hop before you commit."),
-      lesson("l6", "The first two steps", 11, "Direction, not speed, is the first job."),
-      lesson("l7", "Throw that stays online", 8, "A compact exchange when the runner is moving."),
-      lesson("l8", "Partner drill", 8, "A ten-minute drill for two athletes and one ball."),
+      lesson(
+        "l5",
+        "Reading the hop",
+        9,
+        "Judge a short hop versus a long hop before you commit to the ball.",
+        [
+          "A short hop is played out front, with the glove through the ball.",
+          "A long hop is played after the bounce, with the body behind the ball.",
+          "Call the hop to yourself before the ball arrives.",
+        ],
+        "Have a partner roll ten balls. Say “short” or “long” before you field each one.",
+      ),
+      lesson(
+        "l6",
+        "The first two steps",
+        11,
+        "Direction, not speed, is the first job on a ground ball.",
+        [
+          "The first step is toward the ball, not a hop in place.",
+          "The second step sets the glove-side foot so the body is behind the hop.",
+          "Stay low through the field. Speed comes after the angle is right.",
+        ],
+        "Field five balls to the forehand and five to the backhand. Freeze after two steps and check the angle.",
+      ),
+      lesson(
+        "l7",
+        "Throw that stays online",
+        8,
+        "A compact exchange when the runner is moving.",
+        [
+          "Field the ball in the center of the body, then take it straight to the throwing hand.",
+          "The throw starts from a stable front side, not a running lean.",
+          "Aim at the chest of the player covering the base.",
+        ],
+        "Exchange and throw to a partner from 30 feet. Count how many throws stay at chest height.",
+      ),
+      lesson(
+        "l8",
+        "Partner drill",
+        8,
+        "A ten-minute drill for two athletes and one ball.",
+        [
+          "Ten ground balls each side, then rest.",
+          "The partner says the hop before the ball is fielded.",
+          "Switch roles. Talk through one miss instead of rushing the next ball.",
+        ],
+        "Run the drill once. Write down the hop you missed most.",
+      ),
     ],
     resources: [
       { name: "Infield drill notes.txt", body: "Sample notes\nWork in pairs. Ten ground balls each side. Rest. Talk through the hop before you field it." },
@@ -324,10 +419,54 @@ export const courses: Course[] = [
     image: "learn",
     summary: "How a wing keeps the floor spaced, cuts with a purpose, and guards without leaving the helper late.",
     lessons: [
-      lesson("l9", "Where the wing stands", 8, "Spacing relative to the ball and the corner."),
-      lesson("l10", "Cut or hold", 9, "A simple read when the ball is reversed."),
-      lesson("l11", "Closing out", 8, "High hands, short steps, no fly-by."),
-      lesson("l12", "Help and recover", 8, "One slide, then back to your player."),
+      lesson(
+        "l9",
+        "Where the wing stands",
+        8,
+        "Spacing relative to the ball and the corner.",
+        [
+          "Start about one step inside the three-point line, not in the corner and not on the ball.",
+          "See the ball and your player at the same time.",
+          "If two teammates occupy the same lane, you are the one who slides out.",
+        ],
+        "Walk the floor without a ball. Stop in the wing spot on five possessions and check the spacing.",
+      ),
+      lesson(
+        "l10",
+        "Cut or hold",
+        9,
+        "A simple read when the ball is reversed.",
+        [
+          "If the ball swings away and your defender jumps the passing lane, cut to the basket.",
+          "If the lane is occupied, hold the wing and be a passing option.",
+          "One cut, then reset. Do not circle under the basket.",
+        ],
+        "In a 3-on-3, call “cut” or “hold” before you move on each reversal.",
+      ),
+      lesson(
+        "l11",
+        "Closing out",
+        8,
+        "High hands, short steps, and no fly-by.",
+        [
+          "Sprint until you are two steps away, then chop the feet.",
+          "Hands stay high so a shot is contested.",
+          "Stop on balance. A fly-by gives up a drive.",
+        ],
+        "Close out to a partner ten times. They shoot or drive only if you fly by.",
+      ),
+      lesson(
+        "l12",
+        "Help and recover",
+        8,
+        "One slide, then back to your player.",
+        [
+          "Help one step toward the ball when your teammate is beaten.",
+          "Recover to your own player as soon as the ball is picked up.",
+          "Talk on the way there and on the way back.",
+        ],
+        "Run five help-and-recover slides. Say the name of the player you are returning to.",
+      ),
     ],
     resources: [
       { name: "Wing cues.txt", body: "Sample cues\nSee the ball and your player. One job at a time. Talk on the closeout." },
@@ -344,10 +483,54 @@ export const courses: Course[] = [
     image: "court",
     summary: "Platform angle, calling the ball, and a receive pattern a 16U team can repeat.",
     lessons: [
-      lesson("l13", "Platform before the serve", 7, "Early platform, quiet feet."),
-      lesson("l14", "Calling it", 7, "One voice. What to say and when."),
-      lesson("l15", "Seams", 7, "Who takes the ball between two athletes."),
-      lesson("l16", "Target", 7, "Sending the first ball to a spot the setter can reach."),
+      lesson(
+        "l13",
+        "Platform before the serve",
+        7,
+        "Get the platform early and keep the feet quiet.",
+        [
+          "Elbows straight and hands together before the server tosses.",
+          "Feet stop when the server contacts the ball.",
+          "The platform faces the target, not the ceiling.",
+        ],
+        "Take ten tosses from a partner. Freeze the platform before each toss is hit.",
+      ),
+      lesson(
+        "l14",
+        "Calling it",
+        7,
+        "One voice. Know what to say and when.",
+        [
+          "The athlete who will play the ball calls it early.",
+          "Use short words: mine, yours, seam, short, deep.",
+          "If two people call it, the first call stands.",
+        ],
+        "Serve ten balls into a pair. Only one person may speak on each ball.",
+      ),
+      lesson(
+        "l15",
+        "Seams",
+        7,
+        "Decide who takes the ball between two athletes.",
+        [
+          "The athlete moving toward the midline takes the seam.",
+          "Call “seam” before the ball crosses the net.",
+          "The other athlete clears and covers the line.",
+        ],
+        "Stand two steps apart and take ten seam balls. Switch who starts in the middle.",
+      ),
+      lesson(
+        "l16",
+        "Target",
+        7,
+        "Send the first ball to a spot the setter can reach.",
+        [
+          "Aim for a window just right of center, a few feet off the net.",
+          "A high ball the setter can get to is better than a perfect ball they cannot.",
+          "Finish with the platform still facing that window.",
+        ],
+        "Pass ten balls to a setter target. Count how many land inside the window.",
+      ),
     ],
     resources: [
       { name: "Receive calls.txt", body: "Sample calls\nMine. Yours. Seam. Short. Deep. One voice only." },
@@ -364,10 +547,54 @@ export const courses: Course[] = [
     image: "skills",
     summary: "Starting position, angle to the ball, and a first save decision for newer travel goalkeepers.",
     lessons: [
-      lesson("l17", "Set before the shot", 8, "Where to stand when the ball is wide."),
-      lesson("l18", "Angle in three steps", 8, "A short path that does not open the far post."),
-      lesson("l19", "Hands or stay big", 8, "When to commit and when to hold shape."),
-      lesson("l20", "Distribution after the save", 7, "A calm first pass, not a rushed punt."),
+      lesson(
+        "l17",
+        "Set before the shot",
+        8,
+        "Know where to stand when the ball is wide.",
+        [
+          "Start on the goal line between the ball and the center of the goal.",
+          "When the ball is wide, shift so you still see both posts.",
+          "Set the feet before the shot. Do not be moving as it is struck.",
+        ],
+        "Have a partner walk the ball across the top of the box. Reset your feet each time they stop.",
+      ),
+      lesson(
+        "l18",
+        "Angle in three steps",
+        8,
+        "Take a short path that does not open the far post.",
+        [
+          "Step one closes the near side.",
+          "Step two squares the body to the ball.",
+          "Step three is small. A long step opens the far post.",
+        ],
+        "Take three-step angles to five spots. A partner checks whether the far post is still covered.",
+      ),
+      lesson(
+        "l19",
+        "Hands or stay big",
+        8,
+        "Decide when to commit and when to hold your shape.",
+        [
+          "If the shot is within reach and you are set, take it with the hands.",
+          "If you are still moving, stay big and delay the dive.",
+          "After the save, get up before you look for the next pass.",
+        ],
+        "Face ten shots from 12 yards. Call “hands” or “stay” before each one.",
+      ),
+      lesson(
+        "l20",
+        "Distribution after the save",
+        7,
+        "Play a calm first pass instead of a rushed punt.",
+        [
+          "Secure the ball, then look for the nearest open teammate.",
+          "A short throw to a fullback is the first choice.",
+          "Punt only when no short pass is on.",
+        ],
+        "Make five saves and play five first passes to a target 15 yards away.",
+      ),
     ],
     resources: [
       { name: "Keeper warmup.txt", body: "Sample warmup\nFootwork. Catches from a partner. One distribution pattern. Ten minutes." },

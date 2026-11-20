@@ -31,7 +31,7 @@ const slides = [
 ];
 
 export function SplashScreen() {
-  const { ready, account } = useApp();
+  const { ready } = useApp();
   const navigate = useNavigate();
   useTitle("SpotMyRoster");
 
@@ -39,11 +39,10 @@ export function SplashScreen() {
     if (!ready) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timer = window.setTimeout(() => {
-      if (account) navigate({ to: "/home", replace: true });
-      else navigate({ to: "/onboarding", replace: true });
+      navigate({ to: "/onboarding", replace: true });
     }, reduce ? 250 : 1300);
     return () => window.clearTimeout(timer);
-  }, [ready, account, navigate]);
+  }, [ready, navigate]);
 
   return (
     <div className="splash-screen relative flex min-h-dvh flex-col items-center justify-center px-8 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(2rem,env(safe-area-inset-top))]">

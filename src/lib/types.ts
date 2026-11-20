@@ -155,6 +155,8 @@ export type Lesson = {
   title: string;
   minutes: number;
   summary: string;
+  points: string[];
+  practice: string;
 };
 
 export type Course = {

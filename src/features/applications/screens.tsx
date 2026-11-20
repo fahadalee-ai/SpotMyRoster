@@ -5,7 +5,7 @@ import { useApp } from "@/lib/store";
 import type { ApplicationStatus } from "@/lib/types";
 import { formatShort, formatWhen, statusClass, statusLabel } from "@/lib/format";
 import { ApplicationRow, TeamCard } from "@/components/athlete/cards";
-import { Badge, Btn, Chip, EmptyState, Page } from "@/components/athlete/ui";
+import { Badge, Btn, Chip, ChipRow, EmptyState, Page } from "@/components/athlete/ui";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 const filters: Array<ApplicationStatus | "all"> = ["all", "submitted", "viewed", "shortlisted", "invited", "offered", "accepted", "declined", "withdrawn"];
@@ -18,13 +18,13 @@ export function ApplicationsScreen() {
 
   return (
     <Page title="Applications">
-      <div className="mb-4 flex gap-2 overflow-x-auto no-scrollbar">
+      <ChipRow className="mb-4">
         {filters.map((item) => (
           <Chip key={item} selected={filter === item} onClick={() => setFilter(item)}>
             {item === "all" ? "All" : statusLabel(item)}
           </Chip>
         ))}
-      </div>
+      </ChipRow>
       {mine.length === 0 ? (
         <EmptyState title="No applications" body="Apply to an open roster spot and the status will show up here." to="/teams" action="Find teams" />
       ) : (

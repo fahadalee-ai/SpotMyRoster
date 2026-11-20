@@ -4,7 +4,7 @@ import { coaches, courses, events, teams } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import type { NoticeCategory } from "@/lib/types";
 import { formatShort } from "@/lib/format";
-import { Btn, Chip, EmptyState, Page, PullToRefresh, SearchField, useListState } from "@/components/athlete/ui";
+import { Btn, Chip, ChipRow, EmptyState, Page, PullToRefresh, SearchField, useListState } from "@/components/athlete/ui";
 
 const categories: Array<NoticeCategory | "All"> = ["All", "Applications", "Messages", "Events", "Teams", "System"];
 
@@ -26,9 +26,9 @@ export function NotificationsScreen() {
       title="Notifications"
       right={<button type="button" className="min-h-11 text-sm font-semibold text-link" onClick={markAllRead}>Read all</button>}
     >
-      <div className="mb-3 flex gap-2 overflow-x-auto no-scrollbar">
+      <ChipRow className="mb-3">
         {categories.map((item) => <Chip key={item} selected={category === item} onClick={() => setCategory(item)}>{item}</Chip>)}
-      </div>
+      </ChipRow>
       <PullToRefresh onRefresh={list.refresh}>
         {visible.length === 0 ? (
           <EmptyState title="You’re caught up" body="Application, message, event, and team notices show up here." />
