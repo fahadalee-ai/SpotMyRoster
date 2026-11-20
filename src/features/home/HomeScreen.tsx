@@ -88,6 +88,14 @@ export function HomeScreen() {
               <Quick to="/applications" icon={<ClipboardList size={18} />} label={copy.myApplications} />
               <Quick to="/events" icon={<CalendarDays size={18} />} label={copy.upcomingTryouts} />
             </div>
+            <div className="grid grid-cols-2 gap-2">
+              <HomeLink to="/discover" title="Discover" detail="Teams by sport" />
+              <HomeLink to="/opportunities" title="Opportunities" detail="Applications and inquiries" />
+              <HomeLink to="/trainings" title="Trainings" detail="Camps and lessons" />
+              <HomeLink to="/tournaments" title="Tournaments" detail="Weekend events" />
+              <HomeLink to="/profile/stats" title="Stats" detail="Sport numbers" />
+              <HomeLink to="/subscription" title="Premium" detail="$9.99 yearly" />
+            </div>
 
             <section>
               <div className="mb-3 flex h-8 items-center justify-between gap-3">
@@ -151,6 +159,15 @@ export function HomeScreen() {
         )}
       </div>
     </PullToRefresh>
+  );
+}
+
+function HomeLink({ to, title, detail }: { to: "/discover" | "/opportunities" | "/trainings" | "/tournaments" | "/profile/stats" | "/subscription"; title: string; detail: string }) {
+  return (
+    <Link to={to} className="rounded-3xl bg-card px-3 py-3 ring-1 ring-border">
+      <span className="block text-sm font-semibold">{title}</span>
+      <span className="mt-1 block text-xs text-muted-foreground">{detail}</span>
+    </Link>
   );
 }
 

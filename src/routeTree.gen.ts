@@ -20,8 +20,10 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as VerifyRouteImport } from './routes/verify'
+import { Route as AppDiscoverRouteImport } from './routes/_app/discover'
 import { Route as AppHomeRouteImport } from './routes/_app/home'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
+import { Route as AppOpportunitiesRouteImport } from './routes/_app/opportunities'
 import { Route as AppSavedRouteImport } from './routes/_app/saved'
 import { Route as AppSearchRouteImport } from './routes/_app/search'
 import { Route as LegalDocRouteImport } from './routes/legal/$doc'
@@ -42,8 +44,17 @@ import { Route as AppLearnMineRouteImport } from './routes/_app/learn/mine'
 import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
 import { Route as AppProfileEditRouteImport } from './routes/_app/profile/edit'
 import { Route as AppProfilePreviewRouteImport } from './routes/_app/profile/preview'
+import { Route as AppProfileStatsRouteImport } from './routes/_app/profile/stats'
+import { Route as AppSubscriptionIndexRouteImport } from './routes/_app/subscription/index'
+import { Route as AppSubscriptionPaymentRouteImport } from './routes/_app/subscription/payment'
+import { Route as AppSubscriptionSuccessRouteImport } from './routes/_app/subscription/success'
+import { Route as AppSubscriptionUpgradeRouteImport } from './routes/_app/subscription/upgrade'
 import { Route as AppTeamsIndexRouteImport } from './routes/_app/teams/index'
 import { Route as AppTeamsTeamIdRouteImport } from './routes/_app/teams/$teamId'
+import { Route as AppTournamentsIndexRouteImport } from './routes/_app/tournaments/index'
+import { Route as AppTournamentsTournamentIdRouteImport } from './routes/_app/tournaments/$tournamentId'
+import { Route as AppTrainingsIndexRouteImport } from './routes/_app/trainings/index'
+import { Route as AppTrainingsTrainingIdRouteImport } from './routes/_app/trainings/$trainingId'
 import { Route as AppLearnCourseIdLessonsLessonIdRouteImport } from './routes/_app/learn/$courseId/lessons/$lessonId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -100,6 +111,11 @@ const VerifyRoute = VerifyRouteImport.update({
   path: '/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppDiscoverRoute = AppDiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppHomeRoute = AppHomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -108,6 +124,11 @@ const AppHomeRoute = AppHomeRouteImport.update({
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppOpportunitiesRoute = AppOpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppSavedRoute = AppSavedRouteImport.update({
@@ -211,6 +232,31 @@ const AppProfilePreviewRoute = AppProfilePreviewRouteImport.update({
   path: '/profile/preview',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppProfileStatsRoute = AppProfileStatsRouteImport.update({
+  id: '/profile/stats',
+  path: '/profile/stats',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSubscriptionIndexRoute = AppSubscriptionIndexRouteImport.update({
+  id: '/subscription/',
+  path: '/subscription/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSubscriptionPaymentRoute = AppSubscriptionPaymentRouteImport.update({
+  id: '/subscription/payment',
+  path: '/subscription/payment',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSubscriptionSuccessRoute = AppSubscriptionSuccessRouteImport.update({
+  id: '/subscription/success',
+  path: '/subscription/success',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSubscriptionUpgradeRoute = AppSubscriptionUpgradeRouteImport.update({
+  id: '/subscription/upgrade',
+  path: '/subscription/upgrade',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppTeamsIndexRoute = AppTeamsIndexRouteImport.update({
   id: '/teams/',
   path: '/teams/',
@@ -219,6 +265,27 @@ const AppTeamsIndexRoute = AppTeamsIndexRouteImport.update({
 const AppTeamsTeamIdRoute = AppTeamsTeamIdRouteImport.update({
   id: '/teams/$teamId',
   path: '/teams/$teamId',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppTournamentsIndexRoute = AppTournamentsIndexRouteImport.update({
+  id: '/tournaments/',
+  path: '/tournaments/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppTournamentsTournamentIdRoute =
+  AppTournamentsTournamentIdRouteImport.update({
+    id: '/tournaments/$tournamentId',
+    path: '/tournaments/$tournamentId',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
+const AppTrainingsIndexRoute = AppTrainingsIndexRouteImport.update({
+  id: '/trainings/',
+  path: '/trainings/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppTrainingsTrainingIdRoute = AppTrainingsTrainingIdRouteImport.update({
+  id: '/trainings/$trainingId',
+  path: '/trainings/$trainingId',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppLearnCourseIdLessonsLessonIdRoute =
@@ -239,8 +306,10 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/verify': typeof VerifyRoute
+  '/discover': typeof AppDiscoverRoute
   '/home': typeof AppHomeRoute
   '/notifications': typeof AppNotificationsRoute
+  '/opportunities': typeof AppOpportunitiesRoute
   '/saved': typeof AppSavedRoute
   '/search': typeof AppSearchRoute
   '/legal/$doc': typeof LegalDocRoute
@@ -255,14 +324,23 @@ export interface FileRoutesByFullPath {
   '/learn/mine': typeof AppLearnMineRoute
   '/profile/edit': typeof AppProfileEditRoute
   '/profile/preview': typeof AppProfilePreviewRoute
+  '/profile/stats': typeof AppProfileStatsRoute
+  '/subscription/payment': typeof AppSubscriptionPaymentRoute
+  '/subscription/success': typeof AppSubscriptionSuccessRoute
+  '/subscription/upgrade': typeof AppSubscriptionUpgradeRoute
   '/teams/$teamId': typeof AppTeamsTeamIdRoute
+  '/tournaments/$tournamentId': typeof AppTournamentsTournamentIdRoute
+  '/trainings/$trainingId': typeof AppTrainingsTrainingIdRoute
   '/account/': typeof AppAccountIndexRoute
   '/applications/': typeof AppApplicationsIndexRoute
   '/chat/': typeof AppChatIndexRoute
   '/events/': typeof AppEventsIndexRoute
   '/learn/': typeof AppLearnIndexRoute
   '/profile/': typeof AppProfileIndexRoute
+  '/subscription/': typeof AppSubscriptionIndexRoute
   '/teams/': typeof AppTeamsIndexRoute
+  '/tournaments/': typeof AppTournamentsIndexRoute
+  '/trainings/': typeof AppTrainingsIndexRoute
   '/learn/$courseId/lessons/$lessonId': typeof AppLearnCourseIdLessonsLessonIdRoute
 }
 export interface FileRoutesByTo {
@@ -276,8 +354,10 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/verify': typeof VerifyRoute
+  '/discover': typeof AppDiscoverRoute
   '/home': typeof AppHomeRoute
   '/notifications': typeof AppNotificationsRoute
+  '/opportunities': typeof AppOpportunitiesRoute
   '/saved': typeof AppSavedRoute
   '/search': typeof AppSearchRoute
   '/legal/$doc': typeof LegalDocRoute
@@ -292,14 +372,23 @@ export interface FileRoutesByTo {
   '/learn/mine': typeof AppLearnMineRoute
   '/profile/edit': typeof AppProfileEditRoute
   '/profile/preview': typeof AppProfilePreviewRoute
+  '/profile/stats': typeof AppProfileStatsRoute
+  '/subscription/payment': typeof AppSubscriptionPaymentRoute
+  '/subscription/success': typeof AppSubscriptionSuccessRoute
+  '/subscription/upgrade': typeof AppSubscriptionUpgradeRoute
   '/teams/$teamId': typeof AppTeamsTeamIdRoute
+  '/tournaments/$tournamentId': typeof AppTournamentsTournamentIdRoute
+  '/trainings/$trainingId': typeof AppTrainingsTrainingIdRoute
   '/account': typeof AppAccountIndexRoute
   '/applications': typeof AppApplicationsIndexRoute
   '/chat': typeof AppChatIndexRoute
   '/events': typeof AppEventsIndexRoute
   '/learn': typeof AppLearnIndexRoute
   '/profile': typeof AppProfileIndexRoute
+  '/subscription': typeof AppSubscriptionIndexRoute
   '/teams': typeof AppTeamsIndexRoute
+  '/tournaments': typeof AppTournamentsIndexRoute
+  '/trainings': typeof AppTrainingsIndexRoute
   '/learn/$courseId/lessons/$lessonId': typeof AppLearnCourseIdLessonsLessonIdRoute
 }
 export interface FileRoutesById {
@@ -315,8 +404,10 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/setup': typeof SetupRoute
   '/verify': typeof VerifyRoute
+  '/_app/discover': typeof AppDiscoverRoute
   '/_app/home': typeof AppHomeRoute
   '/_app/notifications': typeof AppNotificationsRoute
+  '/_app/opportunities': typeof AppOpportunitiesRoute
   '/_app/saved': typeof AppSavedRoute
   '/_app/search': typeof AppSearchRoute
   '/legal/$doc': typeof LegalDocRoute
@@ -331,14 +422,23 @@ export interface FileRoutesById {
   '/_app/learn/mine': typeof AppLearnMineRoute
   '/_app/profile/edit': typeof AppProfileEditRoute
   '/_app/profile/preview': typeof AppProfilePreviewRoute
+  '/_app/profile/stats': typeof AppProfileStatsRoute
+  '/_app/subscription/payment': typeof AppSubscriptionPaymentRoute
+  '/_app/subscription/success': typeof AppSubscriptionSuccessRoute
+  '/_app/subscription/upgrade': typeof AppSubscriptionUpgradeRoute
   '/_app/teams/$teamId': typeof AppTeamsTeamIdRoute
+  '/_app/tournaments/$tournamentId': typeof AppTournamentsTournamentIdRoute
+  '/_app/trainings/$trainingId': typeof AppTrainingsTrainingIdRoute
   '/_app/account/': typeof AppAccountIndexRoute
   '/_app/applications/': typeof AppApplicationsIndexRoute
   '/_app/chat/': typeof AppChatIndexRoute
   '/_app/events/': typeof AppEventsIndexRoute
   '/_app/learn/': typeof AppLearnIndexRoute
   '/_app/profile/': typeof AppProfileIndexRoute
+  '/_app/subscription/': typeof AppSubscriptionIndexRoute
   '/_app/teams/': typeof AppTeamsIndexRoute
+  '/_app/tournaments/': typeof AppTournamentsIndexRoute
+  '/_app/trainings/': typeof AppTrainingsIndexRoute
   '/_app/learn/$courseId/lessons/$lessonId': typeof AppLearnCourseIdLessonsLessonIdRoute
 }
 export interface FileRouteTypes {
@@ -354,8 +454,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/setup'
     | '/verify'
+    | '/discover'
     | '/home'
     | '/notifications'
+    | '/opportunities'
     | '/saved'
     | '/search'
     | '/legal/$doc'
@@ -370,14 +472,23 @@ export interface FileRouteTypes {
     | '/learn/mine'
     | '/profile/edit'
     | '/profile/preview'
+    | '/profile/stats'
+    | '/subscription/payment'
+    | '/subscription/success'
+    | '/subscription/upgrade'
     | '/teams/$teamId'
+    | '/tournaments/$tournamentId'
+    | '/trainings/$trainingId'
     | '/account/'
     | '/applications/'
     | '/chat/'
     | '/events/'
     | '/learn/'
     | '/profile/'
+    | '/subscription/'
     | '/teams/'
+    | '/tournaments/'
+    | '/trainings/'
     | '/learn/$courseId/lessons/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -391,8 +502,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/setup'
     | '/verify'
+    | '/discover'
     | '/home'
     | '/notifications'
+    | '/opportunities'
     | '/saved'
     | '/search'
     | '/legal/$doc'
@@ -407,14 +520,23 @@ export interface FileRouteTypes {
     | '/learn/mine'
     | '/profile/edit'
     | '/profile/preview'
+    | '/profile/stats'
+    | '/subscription/payment'
+    | '/subscription/success'
+    | '/subscription/upgrade'
     | '/teams/$teamId'
+    | '/tournaments/$tournamentId'
+    | '/trainings/$trainingId'
     | '/account'
     | '/applications'
     | '/chat'
     | '/events'
     | '/learn'
     | '/profile'
+    | '/subscription'
     | '/teams'
+    | '/tournaments'
+    | '/trainings'
     | '/learn/$courseId/lessons/$lessonId'
   id:
     | '__root__'
@@ -429,8 +551,10 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/setup'
     | '/verify'
+    | '/_app/discover'
     | '/_app/home'
     | '/_app/notifications'
+    | '/_app/opportunities'
     | '/_app/saved'
     | '/_app/search'
     | '/legal/$doc'
@@ -445,14 +569,23 @@ export interface FileRouteTypes {
     | '/_app/learn/mine'
     | '/_app/profile/edit'
     | '/_app/profile/preview'
+    | '/_app/profile/stats'
+    | '/_app/subscription/payment'
+    | '/_app/subscription/success'
+    | '/_app/subscription/upgrade'
     | '/_app/teams/$teamId'
+    | '/_app/tournaments/$tournamentId'
+    | '/_app/trainings/$trainingId'
     | '/_app/account/'
     | '/_app/applications/'
     | '/_app/chat/'
     | '/_app/events/'
     | '/_app/learn/'
     | '/_app/profile/'
+    | '/_app/subscription/'
     | '/_app/teams/'
+    | '/_app/tournaments/'
+    | '/_app/trainings/'
     | '/_app/learn/$courseId/lessons/$lessonId'
   fileRoutesById: FileRoutesById
 }
@@ -550,6 +683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/discover': {
+      id: '/_app/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof AppDiscoverRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/home': {
       id: '/_app/home'
       path: '/home'
@@ -562,6 +702,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/opportunities': {
+      id: '/_app/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof AppOpportunitiesRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/saved': {
@@ -704,6 +851,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfilePreviewRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/profile/stats': {
+      id: '/_app/profile/stats'
+      path: '/profile/stats'
+      fullPath: '/profile/stats'
+      preLoaderRoute: typeof AppProfileStatsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/subscription/': {
+      id: '/_app/subscription/'
+      path: '/subscription'
+      fullPath: '/subscription/'
+      preLoaderRoute: typeof AppSubscriptionIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/subscription/payment': {
+      id: '/_app/subscription/payment'
+      path: '/subscription/payment'
+      fullPath: '/subscription/payment'
+      preLoaderRoute: typeof AppSubscriptionPaymentRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/subscription/success': {
+      id: '/_app/subscription/success'
+      path: '/subscription/success'
+      fullPath: '/subscription/success'
+      preLoaderRoute: typeof AppSubscriptionSuccessRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/subscription/upgrade': {
+      id: '/_app/subscription/upgrade'
+      path: '/subscription/upgrade'
+      fullPath: '/subscription/upgrade'
+      preLoaderRoute: typeof AppSubscriptionUpgradeRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/teams/': {
       id: '/_app/teams/'
       path: '/teams'
@@ -716,6 +898,34 @@ declare module '@tanstack/react-router' {
       path: '/teams/$teamId'
       fullPath: '/teams/$teamId'
       preLoaderRoute: typeof AppTeamsTeamIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/tournaments/': {
+      id: '/_app/tournaments/'
+      path: '/tournaments'
+      fullPath: '/tournaments/'
+      preLoaderRoute: typeof AppTournamentsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/tournaments/$tournamentId': {
+      id: '/_app/tournaments/$tournamentId'
+      path: '/tournaments/$tournamentId'
+      fullPath: '/tournaments/$tournamentId'
+      preLoaderRoute: typeof AppTournamentsTournamentIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/trainings/': {
+      id: '/_app/trainings/'
+      path: '/trainings'
+      fullPath: '/trainings/'
+      preLoaderRoute: typeof AppTrainingsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/trainings/$trainingId': {
+      id: '/_app/trainings/$trainingId'
+      path: '/trainings/$trainingId'
+      fullPath: '/trainings/$trainingId'
+      preLoaderRoute: typeof AppTrainingsTrainingIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/learn/$courseId/lessons/$lessonId': {
@@ -740,8 +950,10 @@ const AppLearnCourseIdRouteWithChildren =
   AppLearnCourseIdRoute._addFileChildren(AppLearnCourseIdRouteChildren)
 
 interface AppRouteRouteChildren {
+  AppDiscoverRoute: typeof AppDiscoverRoute
   AppHomeRoute: typeof AppHomeRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
+  AppOpportunitiesRoute: typeof AppOpportunitiesRoute
   AppSavedRoute: typeof AppSavedRoute
   AppSearchRoute: typeof AppSearchRoute
   AppAccountSectionRoute: typeof AppAccountSectionRoute
@@ -755,19 +967,30 @@ interface AppRouteRouteChildren {
   AppLearnMineRoute: typeof AppLearnMineRoute
   AppProfileEditRoute: typeof AppProfileEditRoute
   AppProfilePreviewRoute: typeof AppProfilePreviewRoute
+  AppProfileStatsRoute: typeof AppProfileStatsRoute
+  AppSubscriptionPaymentRoute: typeof AppSubscriptionPaymentRoute
+  AppSubscriptionSuccessRoute: typeof AppSubscriptionSuccessRoute
+  AppSubscriptionUpgradeRoute: typeof AppSubscriptionUpgradeRoute
   AppTeamsTeamIdRoute: typeof AppTeamsTeamIdRoute
+  AppTournamentsTournamentIdRoute: typeof AppTournamentsTournamentIdRoute
+  AppTrainingsTrainingIdRoute: typeof AppTrainingsTrainingIdRoute
   AppAccountIndexRoute: typeof AppAccountIndexRoute
   AppApplicationsIndexRoute: typeof AppApplicationsIndexRoute
   AppChatIndexRoute: typeof AppChatIndexRoute
   AppEventsIndexRoute: typeof AppEventsIndexRoute
   AppLearnIndexRoute: typeof AppLearnIndexRoute
   AppProfileIndexRoute: typeof AppProfileIndexRoute
+  AppSubscriptionIndexRoute: typeof AppSubscriptionIndexRoute
   AppTeamsIndexRoute: typeof AppTeamsIndexRoute
+  AppTournamentsIndexRoute: typeof AppTournamentsIndexRoute
+  AppTrainingsIndexRoute: typeof AppTrainingsIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppDiscoverRoute: AppDiscoverRoute,
   AppHomeRoute: AppHomeRoute,
   AppNotificationsRoute: AppNotificationsRoute,
+  AppOpportunitiesRoute: AppOpportunitiesRoute,
   AppSavedRoute: AppSavedRoute,
   AppSearchRoute: AppSearchRoute,
   AppAccountSectionRoute: AppAccountSectionRoute,
@@ -781,14 +1004,23 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppLearnMineRoute: AppLearnMineRoute,
   AppProfileEditRoute: AppProfileEditRoute,
   AppProfilePreviewRoute: AppProfilePreviewRoute,
+  AppProfileStatsRoute: AppProfileStatsRoute,
+  AppSubscriptionPaymentRoute: AppSubscriptionPaymentRoute,
+  AppSubscriptionSuccessRoute: AppSubscriptionSuccessRoute,
+  AppSubscriptionUpgradeRoute: AppSubscriptionUpgradeRoute,
   AppTeamsTeamIdRoute: AppTeamsTeamIdRoute,
+  AppTournamentsTournamentIdRoute: AppTournamentsTournamentIdRoute,
+  AppTrainingsTrainingIdRoute: AppTrainingsTrainingIdRoute,
   AppAccountIndexRoute: AppAccountIndexRoute,
   AppApplicationsIndexRoute: AppApplicationsIndexRoute,
   AppChatIndexRoute: AppChatIndexRoute,
   AppEventsIndexRoute: AppEventsIndexRoute,
   AppLearnIndexRoute: AppLearnIndexRoute,
   AppProfileIndexRoute: AppProfileIndexRoute,
+  AppSubscriptionIndexRoute: AppSubscriptionIndexRoute,
   AppTeamsIndexRoute: AppTeamsIndexRoute,
+  AppTournamentsIndexRoute: AppTournamentsIndexRoute,
+  AppTrainingsIndexRoute: AppTrainingsIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
