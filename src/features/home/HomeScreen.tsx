@@ -38,31 +38,32 @@ export function HomeScreen() {
     ? Math.round((enrollment.completedLessonIds.length / course.lessons.length) * 100)
     : 0;
   const score = completeness(athlete);
+  const place = [athlete.city, athlete.state].filter(Boolean).join(", ");
+  const role = athlete.positions.join(" / ") || athlete.sports.join(", ");
+  const meta = [place, role].filter(Boolean).join(" · ");
 
   return (
     <PullToRefresh onRefresh={list.refresh}>
-      <div className="px-5 pt-[max(0.75rem,env(safe-area-inset-top))]">
-        <header className="flex items-center justify-between gap-3">
-          <Logo compact />
-          <div className="flex items-center gap-2">
-            <Link to="/search" aria-label={copy.search} className="inline-flex size-11 items-center justify-center rounded-2xl bg-elevated ring-1 ring-border">
+      <div className="px-5 pb-28 pt-[max(0.75rem,env(safe-area-inset-top))]">
+        <header className="flex h-12 items-center justify-between gap-3">
+          <Logo compact plain className="h-7" />
+          <div className="flex shrink-0 items-center gap-2">
+            <Link to="/search" aria-label={copy.search} className="inline-flex size-11 items-center justify-center rounded-full bg-elevated ring-1 ring-border">
               <Search size={18} />
             </Link>
-            <Link to="/notifications" aria-label={copy.notifications} className="relative inline-flex size-11 items-center justify-center rounded-2xl bg-elevated ring-1 ring-border">
+            <Link to="/notifications" aria-label={copy.notifications} className="relative inline-flex size-11 items-center justify-center rounded-full bg-elevated ring-1 ring-border">
               <Bell size={18} />
-              {unreadNotes > 0 && <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />}
+              {unreadNotes > 0 && <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-primary" />}
             </Link>
-            <Link to="/profile" aria-label={copy.profile}>
+            <Link to="/profile" aria-label={copy.profile} className="inline-flex">
               <Avatar name={athleteName(athlete)} src={athlete.photoUrl} size={44} />
             </Link>
           </div>
         </header>
 
-        <p className="mt-6 text-sm text-muted-foreground">{hello}</p>
-        <h1 className="font-display text-[2rem] font-semibold leading-tight">{athlete.firstName}</h1>
-        <p className="text-sm text-muted-foreground">
-          {athlete.city}, {athlete.state} · {athlete.positions.join(" / ") || athlete.sports.join(", ")}
-        </p>
+        <p className="mt-6 text-sm font-medium text-muted-foreground">{hello}</p>
+        <h1 className="mt-1 font-display text-[1.75rem] font-semibold leading-none">{athlete.firstName || "Athlete"}</h1>
+        {meta && <p className="mt-2 text-sm leading-5 text-muted-foreground">{meta}</p>}
 
         {list.loading ? (
           <div className="mt-6">
@@ -73,25 +74,25 @@ export function HomeScreen() {
             <ErrorState title="Home didn’t load" body="Check the connection and try again." onRetry={list.refresh} />
           </div>
         ) : (
-          <div className="mt-6 space-y-6">
+          <div className="mt-6 space-y-7">
             <Link to="/profile/edit" className="block rounded-3xl bg-card p-4 ring-1 ring-border">
-              <div className="mb-3 flex items-center justify-between">
-                <p className="font-semibold">Profile strength</p>
-                <span className="text-sm font-semibold text-link">{score}%</span>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="font-semibold leading-none">Profile strength</p>
+                <span className="text-sm font-semibold leading-none text-link">{score}%</span>
               </div>
               <ProgressBar value={score} />
             </Link>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 items-stretch gap-2">
               <Quick to="/teams" icon={<Search size={18} />} label={copy.findTeams} />
               <Quick to="/applications" icon={<ClipboardList size={18} />} label={copy.myApplications} />
               <Quick to="/events" icon={<CalendarDays size={18} />} label={copy.upcomingTryouts} />
             </div>
 
             <section>
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="font-display text-lg font-semibold">Applications</h2>
-                <Link to="/applications" className="text-sm font-semibold text-link">See all</Link>
+              <div className="mb-3 flex h-8 items-center justify-between gap-3">
+                <h2 className="font-display text-lg font-semibold leading-none">Applications</h2>
+                <Link to="/applications" className="text-sm font-semibold leading-none text-link">See all</Link>
               </div>
               {active.length === 0 ? (
                 <EmptyState title="No open applications" body="When you apply to a roster spot, the status shows up here." to="/teams" action={copy.findTeams} />
@@ -105,7 +106,7 @@ export function HomeScreen() {
             </section>
 
             <section>
-              <h2 className="mb-3 font-display text-lg font-semibold">Open spots in range</h2>
+              <h2 className="mb-3 font-display text-lg font-semibold leading-none">Open spots in range</h2>
               {recommended.length === 0 ? (
                 <EmptyState title="Nothing in range" body="Widen the travel radius on the profile, or browse every opening." to="/teams" action="Browse teams" />
               ) : (
@@ -116,9 +117,9 @@ export function HomeScreen() {
             </section>
 
             <section>
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="font-display text-lg font-semibold">Upcoming</h2>
-                <Link to="/events" className="text-sm font-semibold text-link">Calendar</Link>
+              <div className="mb-3 flex h-8 items-center justify-between gap-3">
+                <h2 className="font-display text-lg font-semibold leading-none">Upcoming</h2>
+                <Link to="/events" className="text-sm font-semibold leading-none text-link">Calendar</Link>
               </div>
               <div className="space-y-3">
                 {upcoming.length === 0 && <p className="text-sm text-muted-foreground">No upcoming events for these sports.</p>}
@@ -155,9 +156,9 @@ export function HomeScreen() {
 
 function Quick({ to, icon, label }: { to: "/teams" | "/applications" | "/events"; icon: ReactNode; label: string }) {
   return (
-    <Link to={to} className="flex min-h-24 flex-col items-start justify-between rounded-3xl bg-card p-3 text-left ring-1 ring-border">
-      <span className="inline-flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">{icon}</span>
-      <span className="text-xs font-semibold leading-tight">{label}</span>
+    <Link to={to} className="flex h-full min-h-[6.75rem] flex-col items-center justify-center gap-2.5 rounded-3xl bg-card px-2 py-3 text-center ring-1 ring-border">
+      <span className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">{icon}</span>
+      <span className="text-xs font-semibold leading-4">{label}</span>
     </Link>
   );
 }

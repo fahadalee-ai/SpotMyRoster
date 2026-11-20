@@ -142,7 +142,7 @@ export function TeamDetailScreen({ teamId }: { teamId: string }) {
           </IconButton>
         </div>
       </div>
-      <div className="space-y-5 px-5 py-5">
+      <div className="space-y-5 px-5 py-5 pb-28">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h1 className="font-display text-[1.75rem] font-semibold leading-tight">{team.name}</h1>
@@ -258,7 +258,11 @@ export function ApplyScreen({ openingId }: { openingId: string }) {
   const team = teams.find((item) => item.id === opening?.teamId);
   const { athlete, athletes, account, applications, setActiveAthlete, apply } = useApp();
   const navigate = useNavigate();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(() =>
+    athlete
+      ? `${athlete.firstName} ${athlete.lastName} · ${athlete.positions.join(" / ") || athlete.sports.join(", ") || "Athlete"} · ${athlete.city}, ${athlete.state}. ${athlete.bio}`.trim()
+      : "",
+  );
   const [fileName, setFileName] = useState("");
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState("");

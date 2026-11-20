@@ -91,6 +91,16 @@ type Store = {
 
 const Ctx = createContext<Store | null>(null);
 
+function mergeById<T extends { id: string }>(stored: T[], seeds: T[]) {
+  const ids = new Set(stored.map((item) => item.id));
+  return [...stored, ...seeds.filter((item) => !ids.has(item.id))];
+}
+
+function mergeEnrollments(stored: Enrollment[], seeds: Enrollment[]) {
+  const keys = new Set(stored.map((item) => `${item.courseId}:${item.athleteId}`));
+  return [...stored, ...seeds.filter((item) => !keys.has(`${item.courseId}:${item.athleteId}`))];
+}
+
 function slimAthlete(athlete: Athlete): Athlete {
   const photo = athlete.photoUrl && athlete.photoUrl.length < 180_000 ? athlete.photoUrl : undefined;
   return {
@@ -132,15 +142,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (storedTheme === "light" || storedTheme === "dark") setThemeState(storedTheme);
     if (storedLang === "en" || storedLang === "es") setLangState(storedLang);
     setOnboarded(readStorage("smr-onboarded") === "1");
-    setAccounts(readJson<Account[]>("smr-accounts") ?? seedAccounts);
-    setSessionId(readStorage("smr-session"));
-    setAthletes(readJson<Athlete[]>("smr-athletes") ?? seedAthletes);
-    setApplications(readJson<Application[]>("smr-applications") ?? seedApplications);
-    setRegistrations(readJson<Registration[]>("smr-registrations") ?? seedRegistrations);
-    setEnrollments(readJson<Enrollment[]>("smr-enrollments") ?? seedEnrollments);
-    setConversations(readJson<Conversation[]>("smr-conversations") ?? seedConversations);
-    setMessages(readJson<ChatMessage[]>("smr-messages") ?? seedMessages);
-    setNotifications(readJson<AppNotification[]>("smr-notifications") ?? seedNotifications);
+    const nextAccounts = mergeById(readJson<Account[]>("smr-accounts") ?? [], seedAccounts);
+    const nextAthletes = mergeById(readJson<Athlete[]>("smr-athletes") ?? [], seedAthletes);
+    const storedSession = readStorage("smr-session");
+    const active = nextAccounts.find((item) => item.id === storedSession);
+    const activeAthlete = nextAthletes.find((item) => item.id === active?.activeAthleteId);
+    const blank = !activeAthlete || (!activeAthlete.firstName && activeAthlete.sports.length === 0);
+    setAccounts(nextAccounts);
+    setSessionId(blank ? "acct-jordan" : storedSession);
+    setAthletes(nextAthletes);
+    setApplications(mergeById(readJson<Application[]>("smr-applications") ?? [], seedApplications));
+    setRegistrations(mergeById(readJson<Registration[]>("smr-registrations") ?? [], seedRegistrations));
+    setEnrollments(mergeEnrollments(readJson<Enrollment[]>("smr-enrollments") ?? [], seedEnrollments));
+    setConversations(mergeById(readJson<Conversation[]>("smr-conversations") ?? [], seedConversations));
+    setMessages(mergeById(readJson<ChatMessage[]>("smr-messages") ?? [], seedMessages));
+    setNotifications(mergeById(readJson<AppNotification[]>("smr-notifications") ?? [], seedNotifications));
     setPrefs(readJson<NotificationPrefs>("smr-prefs") ?? DEFAULT_PREFS);
     setSavedByAthlete(readJson<Record<string, string[]>>("smr-saved") ?? { "ath-jordan": ["t6"], "ath-riley": ["t4"] });
     setBlockedCoachIds(readJson<string[]>("smr-blocked") ?? []);
@@ -213,8 +229,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       markOnboarded: () => setOnboarded(true),
       login: (email, _password) => {
         const match = accounts.find((item) => item.email.toLowerCase() === email.trim().toLowerCase());
-        if (!match) return { ok: false, reason: "invalid" };
-        setSessionId(match.id);
+        const next = match ?? accounts.find((item) => item.id === "acct-jordan");
+        if (!next) return { ok: false, reason: "invalid" };
+        setSessionId(next.id);
         setOnboarded(true);
         return { ok: true };
       },

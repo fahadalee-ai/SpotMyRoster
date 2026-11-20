@@ -116,7 +116,7 @@ export function OnboardingScreen() {
 }
 
 export function LoginScreen() {
-  const { login, register, markOnboarded, ready } = useApp();
+  const { login, markOnboarded, ready } = useApp();
   const navigate = useNavigate();
   const copy = useCopy();
   const [email, setEmail] = useState("");
@@ -128,8 +128,7 @@ export function LoginScreen() {
     event.preventDefault();
     setLoading(true);
     window.setTimeout(() => {
-      const result = login(email, password);
-      if (!result.ok) register({ role: "athlete", firstName: "", lastName: "", email, phone: "", password });
+      login(email, password);
       setLoading(false);
       markOnboarded();
       navigate({ to: "/home" });

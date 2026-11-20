@@ -23,11 +23,11 @@ export function useTitle(title: string) {
   }, [title]);
 }
 
-export function Logo({ compact, plain }: { compact?: boolean; plain?: boolean }) {
-  const size = compact ? "h-8 w-auto" : "h-12 w-auto";
+export function Logo({ compact, plain, className }: { compact?: boolean; plain?: boolean; className?: string }) {
+  const size = cn(compact ? "h-8 w-auto max-w-full object-contain object-left" : "h-12 w-auto", className);
   if (plain) {
     return (
-      <span className="inline-flex">
+      <span className="inline-flex min-w-0 items-center">
         <img src={images.logoOnDark} alt="SpotMyRoster" className={cn("auth-logo-dark", size)} />
         <img src={images.logoMark} alt="SpotMyRoster" className={cn("auth-logo-light", size)} />
       </span>
@@ -147,7 +147,7 @@ export function Page({
   return (
     <div className="min-h-dvh">
       <TopBar title={title} back={back} right={right} />
-      <div className={cn("px-5", className)}>{children}</div>
+      <div className={cn("px-5 pb-28", className)}>{children}</div>
     </div>
   );
 }
