@@ -451,7 +451,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (athlete.whoCanMessage === "none") return { ok: false, reason: "locked" };
         if (blockedCoachIds.includes(conversation.coachId)) return { ok: false, reason: "blocked" };
         const text = body.trim();
-        if (!text && !attachmentName) return { ok: false, reason: "empty" };
         setMessages((list) => [
           ...list,
           {

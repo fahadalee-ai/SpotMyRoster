@@ -1,5 +1,6 @@
 import logo from "@/img/logo.png";
 import logoMark from "@/assets/images/branding/logo-mark.png";
+import logoOnDark from "@/assets/images/branding/logo-on-dark.png";
 import discover from "@/assets/images/onboarding/discover.jpg";
 import skills from "@/assets/images/onboarding/skills.jpg";
 import apply from "@/assets/images/onboarding/apply.jpg";
@@ -13,6 +14,7 @@ import type { Course } from "@/lib/types";
 export const images = {
   logo,
   logoMark,
+  logoOnDark,
   discover,
   skills,
   apply,

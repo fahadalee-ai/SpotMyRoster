@@ -261,7 +261,6 @@ export function ApplyScreen({ openingId }: { openingId: string }) {
   const [message, setMessage] = useState("");
   const [fileName, setFileName] = useState("");
   const [progress, setProgress] = useState(0);
-  const [error, setError] = useState("");
   const [done, setDone] = useState("");
   useTitle("Apply");
 
@@ -273,10 +272,6 @@ export function ApplyScreen({ openingId }: { openingId: string }) {
   const managed = athletes.filter((item) => account.athleteIds.includes(item.id));
 
   const submit = () => {
-    if (message.trim().length < 10) {
-      setError("Write at least 10 characters so the coach knows why you are applying.");
-      return;
-    }
     const id = apply({ openingId: opening.id, teamId: team.id, position: opening.position, message, attachmentName: fileName || undefined });
     setDone(id);
   };
@@ -325,7 +320,6 @@ export function ApplyScreen({ openingId }: { openingId: string }) {
           <label className="block">
             <span className="mb-1.5 block text-[0.8125rem] font-semibold">Message to the coach</span>
             <textarea value={message} onChange={(event) => setMessage(event.target.value)} className="min-h-32 w-full rounded-2xl bg-elevated px-3 py-3 text-base ring-1 ring-border" />
-            {error && <span className="mt-1 block text-xs text-destructive">{error}</span>}
           </label>
           <label className="block text-sm">
             <span className="mb-1.5 block font-semibold">Highlight or document</span>
@@ -336,10 +330,6 @@ export function ApplyScreen({ openingId }: { openingId: string }) {
               onChange={(event) => {
                 const file = event.target.files?.[0];
                 if (!file) return;
-                if (file.size > 12_000_000) {
-                  toast("That file is over 12 MB.");
-                  return;
-                }
                 setProgress(15);
                 const timer = window.setInterval(() => {
                   setProgress((value) => {

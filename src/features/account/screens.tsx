@@ -4,12 +4,11 @@ import { toast } from "sonner";
 import { coaches } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import type { Athlete, NotificationPrefs } from "@/lib/types";
-import { emailIssue, passwordIssue, phoneIssue } from "@/lib/validate";
 import { isUnder13 } from "@/lib/format";
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Btn, EmptyState, Page, PasswordField, RowLink, SelectField, TextField, useCopy, useIssue } from "@/components/athlete/ui";
+import { Btn, EmptyState, Page, PasswordField, RowLink, SelectField, TextField, useCopy } from "@/components/athlete/ui";
 
 export function AccountScreen() {
   const { account, athlete, logout } = useApp();
@@ -85,37 +84,31 @@ export function AccountSectionScreen({ section }: { section: string }) {
 
 function PasswordSection() {
   const { changePassword } = useApp();
-  const issue = useIssue();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState("");
   return (
     <Page title="Change password">
       <form
         className="space-y-4"
         onSubmit={(event) => {
           event.preventDefault();
-          const pass = passwordIssue(next);
-          const fieldErrors: Record<string, string> = {};
-          if (!current) fieldErrors.current = issue("required");
-          if (pass) fieldErrors.next = issue(pass);
-          if (next !== confirm) fieldErrors.confirm = issue("match");
-          setErrors(fieldErrors);
-          if (Object.keys(fieldErrors).length) return;
           if (!changePassword(current, next)) {
-            setErrors({ current: "Current password does not match." });
+            setFormError("Current password does not match.");
             return;
           }
           toast("Password updated on this device");
+          setFormError("");
           setCurrent("");
           setNext("");
           setConfirm("");
         }}
       >
-        <PasswordField label="Current password" value={current} error={errors.current} onChange={(event) => setCurrent(event.target.value)} />
-        <PasswordField label="New password" value={next} error={errors.next} onChange={(event) => setNext(event.target.value)} />
-        <PasswordField label="Confirm password" value={confirm} error={errors.confirm} onChange={(event) => setConfirm(event.target.value)} />
+        <PasswordField label="Current password" value={current} onChange={(event) => setCurrent(event.target.value)} />
+        <PasswordField label="New password" value={next} onChange={(event) => setNext(event.target.value)} />
+        <PasswordField label="Confirm password" value={confirm} onChange={(event) => setConfirm(event.target.value)} />
+        {formError && <p className="text-sm text-destructive">{formError}</p>}
         <Btn type="submit" full>Update password</Btn>
       </form>
     </Page>
@@ -152,7 +145,6 @@ function AthletesSection() {
           className="mt-6 space-y-3"
           onSubmit={(event) => {
             event.preventDefault();
-            if (!first.trim() || !last.trim()) return;
             addAthlete(first, last);
             toast("Athlete added. Finish the profile setup.");
             setFirst("");
@@ -171,12 +163,10 @@ function AthletesSection() {
 
 function GuardianSection() {
   const { account, updateAccount } = useApp();
-  const issue = useIssue();
   const [name, setName] = useState(account?.guardian?.name ?? "");
   const [email, setEmail] = useState(account?.guardian?.email ?? "");
   const [phone, setPhone] = useState(account?.guardian?.phone ?? "");
   const [relationship, setRelationship] = useState(account?.guardian?.relationship ?? "Parent");
-  const [error, setError] = useState("");
   if (!account) return null;
   return (
     <Page title="Parent / guardian">
@@ -184,12 +174,6 @@ function GuardianSection() {
         className="space-y-4"
         onSubmit={(event) => {
           event.preventDefault();
-          const mail = emailIssue(email);
-          const tel = phoneIssue(phone);
-          if (!name.trim() || mail || tel) {
-            setError(mail ? issue(mail) : tel ? issue(tel) : issue("required"));
-            return;
-          }
           updateAccount({ guardian: { name: name.trim(), email: email.trim(), phone: phone.trim(), relationship } });
           toast("Guardian details saved on this device");
         }}
@@ -198,7 +182,6 @@ function GuardianSection() {
         <TextField label="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
         <TextField label="Phone" value={phone} onChange={(event) => setPhone(event.target.value)} />
         <SelectField label="Relationship" value={relationship} onChange={setRelationship} options={["Parent", "Guardian"].map((item) => ({ value: item, label: item }))} />
-        {error && <p className="text-sm text-destructive">{error}</p>}
         <Btn type="submit" full>Save</Btn>
       </form>
     </Page>

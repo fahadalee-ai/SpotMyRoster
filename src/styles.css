@@ -213,6 +213,10 @@
   animation: splash-in 700ms ease both;
 }
 
+.auth-logo-light { display: none; }
+[data-theme="light"] .auth-logo-dark { display: none; }
+[data-theme="light"] .auth-logo-light { display: inline; }
+
 .splash-screen {
   background:
     radial-gradient(ellipse 70% 45% at 50% 42%, color-mix(in srgb, var(--brand-primary) 28%, transparent), transparent 70%),

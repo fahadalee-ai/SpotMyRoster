@@ -23,10 +23,19 @@ export function useTitle(title: string) {
   }, [title]);
 }
 
-export function Logo({ compact }: { compact?: boolean }) {
+export function Logo({ compact, plain }: { compact?: boolean; plain?: boolean }) {
+  const size = compact ? "h-8 w-auto" : "h-12 w-auto";
+  if (plain) {
+    return (
+      <span className="inline-flex">
+        <img src={images.logoOnDark} alt="SpotMyRoster" className={cn("auth-logo-dark", size)} />
+        <img src={images.logoMark} alt="SpotMyRoster" className={cn("auth-logo-light", size)} />
+      </span>
+    );
+  }
   return (
     <span className={cn("inline-flex rounded-xl bg-black", compact ? "px-2 py-1" : "px-3 py-2")}>
-      <img src={images.logo} alt="SpotMyRoster" className={compact ? "h-8 w-auto" : "h-12 w-auto"} />
+      <img src={images.logo} alt="SpotMyRoster" className={size} />
     </span>
   );
 }

@@ -103,7 +103,7 @@ export function ChatThreadScreen({ conversationId }: { conversationId: string })
           event.preventDefault();
           const result = sendMessage(conversation.id, body, fileName || undefined);
           if (!result.ok) {
-            toast(result.reason === "locked" ? "Messaging is turned off." : result.reason === "blocked" ? "Unblock this coach to write." : "Write a message first.");
+            toast(result.reason === "locked" ? "Messaging is turned off." : "Unblock this coach to write.");
             return;
           }
           setBody("");

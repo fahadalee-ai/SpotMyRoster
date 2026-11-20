@@ -145,7 +145,6 @@ export function EditProfileScreen() {
           <TextField label="Value" value={measureValue} onChange={(event) => setMeasureValue(event.target.value)} />
         </div>
         <Btn variant="secondary" onClick={() => {
-          if (!measureLabel.trim() || !measureValue.trim()) return;
           patch({ measurables: [...draft.measurables, { label: `${measureLabel.trim()} (self-reported)`, value: measureValue.trim() }] });
           setMeasureLabel("");
           setMeasureValue("");
@@ -158,10 +157,6 @@ export function EditProfileScreen() {
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (!file) return;
-              if (file.size > 12_000_000) {
-                setUploadError("Files over 12 MB are not attached in this sample.");
-                return;
-              }
               setUploadError("");
               setUploadProgress(20);
               const finish = (url?: string) => {

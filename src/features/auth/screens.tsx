@@ -4,8 +4,7 @@ import { toast } from "sonner";
 import { images } from "@/lib/images";
 import { SAMPLE_OTP, SAMPLE_PASSWORD } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
-import { emailIssue, passwordIssue, phoneIssue, requiredIssue } from "@/lib/validate";
-import { Btn, Logo, PasswordField, TextField, useCopy, useIssue, useTitle } from "@/components/athlete/ui";
+import { Btn, Logo, PasswordField, TextField, useCopy, useTitle } from "@/components/athlete/ui";
 
 const slides = [
   {
@@ -110,28 +109,21 @@ export function OnboardingScreen() {
 export function LoginScreen() {
   const { login, markOnboarded, ready } = useApp();
   const navigate = useNavigate();
-  const issue = useIssue();
   const copy = useCopy();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
+  const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
   useTitle(copy.signIn);
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    const next = {
-      email: issue(emailIssue(email)),
-      password: password ? "" : issue("required"),
-    };
-    setErrors(next);
-    if (next.email || next.password) return;
     setLoading(true);
     window.setTimeout(() => {
       const result = login(email, password);
       setLoading(false);
       if (!result.ok) {
-        setErrors({ form: "That email and password do not match a sample account." });
+        setFormError("That email and password do not match a sample account.");
         return;
       }
       markOnboarded();
@@ -142,9 +134,9 @@ export function LoginScreen() {
   return (
     <AuthFrame title="Welcome back" subtitle="Athlete and parent sign-in. Coaches use the separate Coach app.">
       <form className="space-y-4" onSubmit={submit} noValidate>
-        <TextField label="Email" type="email" autoComplete="email" value={email} error={errors.email} onChange={(event) => setEmail(event.target.value)} />
-        <PasswordField label="Password" autoComplete="current-password" value={password} error={errors.password} onChange={(event) => setPassword(event.target.value)} />
-        {errors.form && <p className="text-sm text-destructive" role="alert">{errors.form}</p>}
+        <TextField label="Email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+        <PasswordField label="Password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} />
+        {formError && <p className="text-sm text-destructive" role="alert">{formError}</p>}
         <div className="text-right">
           <Link to="/forgot-password" className="text-sm font-semibold text-link">Forgot password</Link>
         </div>
@@ -173,7 +165,6 @@ export function LoginScreen() {
 export function RegisterScreen() {
   const { register } = useApp();
   const navigate = useNavigate();
-  const issue = useIssue();
   const [role, setRole] = useState<"athlete" | "parent" | "">("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -182,34 +173,18 @@ export function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [terms, setTerms] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
   useTitle("Create account");
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    const next: Record<string, string> = {};
-    if (!role) next.role = issue("required");
-    const first = requiredIssue(firstName);
-    const last = requiredIssue(lastName);
-    const mail = emailIssue(email);
-    const tel = phoneIssue(phone);
-    const pass = passwordIssue(password);
-    if (first) next.firstName = issue(first);
-    if (last) next.lastName = issue(last);
-    if (mail) next.email = issue(mail);
-    if (tel) next.phone = issue(tel);
-    if (pass) next.password = issue(pass);
-    if (password !== confirm) next.confirm = issue("match");
-    if (!terms) next.terms = "Accept the terms notice to continue. Official legal text is not published yet.";
-    setErrors(next);
-    if (Object.keys(next).length || !role) return;
     setLoading(true);
     window.setTimeout(() => {
-      const result = register({ role, firstName, lastName, email, phone, password });
+      const result = register({ role: role || "athlete", firstName, lastName, email, phone, password });
       setLoading(false);
       if (!result.ok) {
-        setErrors({ email: "An account with that email already exists in this sample." });
+        setFormError("An account with that email already exists in this sample.");
         return;
       }
       navigate({ to: "/verify", search: { purpose: "email", email: email.trim() } });
@@ -234,16 +209,15 @@ export function RegisterScreen() {
               </button>
             ))}
           </div>
-          {errors.role && <p className="mt-1 text-xs text-destructive">{errors.role}</p>}
         </fieldset>
         <div className="grid grid-cols-2 gap-3">
-          <TextField label="First name" value={firstName} error={errors.firstName} onChange={(event) => setFirstName(event.target.value)} />
-          <TextField label="Last name" value={lastName} error={errors.lastName} onChange={(event) => setLastName(event.target.value)} />
+          <TextField label="First name" value={firstName} onChange={(event) => setFirstName(event.target.value)} />
+          <TextField label="Last name" value={lastName} onChange={(event) => setLastName(event.target.value)} />
         </div>
-        <TextField label="Email" type="email" autoComplete="email" value={email} error={errors.email} onChange={(event) => setEmail(event.target.value)} />
-        <TextField label="Phone" type="tel" autoComplete="tel" value={phone} error={errors.phone} onChange={(event) => setPhone(event.target.value)} />
-        <PasswordField label="Password" autoComplete="new-password" value={password} error={errors.password} onChange={(event) => setPassword(event.target.value)} />
-        <PasswordField label="Confirm password" autoComplete="new-password" value={confirm} error={errors.confirm} onChange={(event) => setConfirm(event.target.value)} />
+        <TextField label="Email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+        <TextField label="Phone" type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} />
+        <PasswordField label="Password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} />
+        <PasswordField label="Confirm password" autoComplete="new-password" value={confirm} onChange={(event) => setConfirm(event.target.value)} />
         <label className="flex min-h-11 items-start gap-3 text-sm leading-relaxed">
           <input type="checkbox" className="mt-1 size-5 accent-[var(--brand-dark)]" checked={terms} onChange={(event) => setTerms(event.target.checked)} />
           <span>
@@ -254,7 +228,7 @@ export function RegisterScreen() {
             {" "}notices. Official legal copy has not been published in this sample.
           </span>
         </label>
-        {errors.terms && <p className="text-sm text-destructive">{errors.terms}</p>}
+        {formError && <p className="text-sm text-destructive">{formError}</p>}
         <Btn type="submit" full loading={loading}>Create account</Btn>
       </form>
       <p className="mt-6 text-sm text-muted-foreground">
@@ -265,32 +239,19 @@ export function RegisterScreen() {
 }
 
 export function ForgotScreen() {
-  const { accounts } = useApp();
   const navigate = useNavigate();
-  const issue = useIssue();
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
   useTitle("Forgot password");
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    const mail = emailIssue(email);
-    if (mail) {
-      setError(issue(mail));
-      return;
-    }
-    const exists = accounts.some((item) => item.email.toLowerCase() === email.trim().toLowerCase());
-    if (!exists) {
-      setError("No sample account uses that email.");
-      return;
-    }
     navigate({ to: "/verify", search: { purpose: "reset", email: email.trim() } });
   };
 
   return (
     <AuthFrame title="Reset your password" subtitle="We will ask for the sample verification code next. No email is sent.">
       <form className="space-y-4" onSubmit={submit} noValidate>
-        <TextField label="Email" type="email" value={email} error={error} onChange={(event) => setEmail(event.target.value)} />
+        <TextField label="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
         <Btn type="submit" full>Send code</Btn>
       </form>
     </AuthFrame>
@@ -300,17 +261,11 @@ export function ForgotScreen() {
 export function VerifyScreen({ purpose, email }: { purpose: "email" | "reset"; email: string }) {
   const { verifyEmail } = useApp();
   const navigate = useNavigate();
-  const issue = useIssue();
   const [code, setCode] = useState("");
-  const [error, setError] = useState("");
   useTitle("Verification");
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (code.trim() !== SAMPLE_OTP) {
-      setError(issue("otp"));
-      return;
-    }
     if (purpose === "email") {
       verifyEmail();
       navigate({ to: "/auth-success", replace: true });
@@ -330,12 +285,10 @@ export function VerifyScreen({ purpose, email }: { purpose: "email" | "reset"; e
           label="6-digit code"
           inputMode="numeric"
           autoComplete="one-time-code"
-          maxLength={6}
           value={code}
-          error={error}
-          onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
+          onChange={(event) => setCode(event.target.value)}
         />
-        <Btn type="submit" full disabled={code.length !== 6}>Verify</Btn>
+        <Btn type="submit" full>Verify</Btn>
         <button type="button" className="min-h-11 text-sm font-semibold text-link" onClick={() => toast("Sample code is still 482913")}>
           Resend sample code
         </button>
@@ -347,21 +300,12 @@ export function VerifyScreen({ purpose, email }: { purpose: "email" | "reset"; e
 export function ResetScreen() {
   const { resetPassword } = useApp();
   const navigate = useNavigate();
-  const issue = useIssue();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [errors, setErrors] = useState<{ password?: string; confirm?: string }>({});
   useTitle("New password");
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
-    const pass = passwordIssue(password);
-    const next = {
-      password: pass ? issue(pass) : "",
-      confirm: password !== confirm ? issue("match") : "",
-    };
-    setErrors(next);
-    if (next.password || next.confirm) return;
     const email = sessionStorage.getItem("smr-reset-email") ?? "";
     const ok = resetPassword(email, password);
     if (!ok) {
@@ -373,10 +317,10 @@ export function ResetScreen() {
   };
 
   return (
-    <AuthFrame title="Choose a new password" subtitle="Use at least 8 characters, with a letter and a number.">
+    <AuthFrame title="Choose a new password" subtitle="This change is stored only on this device.">
       <form className="space-y-4" onSubmit={submit} noValidate>
-        <PasswordField label="New password" value={password} error={errors.password} onChange={(event) => setPassword(event.target.value)} />
-        <PasswordField label="Confirm password" value={confirm} error={errors.confirm} onChange={(event) => setConfirm(event.target.value)} />
+        <PasswordField label="New password" value={password} onChange={(event) => setPassword(event.target.value)} />
+        <PasswordField label="Confirm password" value={confirm} onChange={(event) => setConfirm(event.target.value)} />
         <Btn type="submit" full>Update password</Btn>
       </form>
     </AuthFrame>
@@ -406,7 +350,7 @@ export function AuthSuccessScreen() {
 function AuthFrame({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return (
     <div className="min-h-dvh bg-background px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
-      <Logo compact />
+      <Logo compact plain />
       <h1 className="mt-6 font-display text-[2rem] font-semibold leading-tight">{title}</h1>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
       <div className="mt-6">{children}</div>

@@ -15,7 +15,6 @@ export function SetupScreen() {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<Athlete | null>(null);
   const [consent, setConsent] = useState(false);
-  const [error, setError] = useState("");
   useTitle("Profile setup");
 
   useEffect(() => {
@@ -47,16 +46,6 @@ export function SetupScreen() {
   };
 
   const finish = () => {
-    if (!draft.firstName.trim() || !draft.lastName.trim() || !draft.birthYear || !draft.sports.length || !draft.city.trim() || !draft.state) {
-      setError("Add a name, birth year, at least one sport, and a city and state before finishing.");
-      setStep(0);
-      return;
-    }
-    if (minor && (!account.guardian?.name || !consent)) {
-      setError("A parent or guardian must be named, and the consent box must be checked, before a minor profile can be finished.");
-      setStep(5);
-      return;
-    }
     persist(true);
     toast("Profile saved on this device");
     navigate({ to: "/home", replace: true });
@@ -262,16 +251,15 @@ export function SetupScreen() {
             <p className="text-muted-foreground">{draft.bio || "No bio yet."}</p>
           </div>
         )}
-        {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
       </div>
       <div className="mt-6 flex gap-3">
         {step > 0 && (
-          <Btn variant="secondary" onClick={() => { setError(""); setStep((value) => value - 1); }}>
+          <Btn variant="secondary" onClick={() => setStep((value) => value - 1)}>
             Back
           </Btn>
         )}
         {step < steps.length - 1 ? (
-          <Btn full onClick={() => { setError(""); persist(false); setStep((value) => value + 1); }}>
+          <Btn full onClick={() => { persist(false); setStep((value) => value + 1); }}>
             Continue
           </Btn>
         ) : (
@@ -297,10 +285,6 @@ function PhotoField({ url, onPick }: { url?: string; onPick: (url: string) => vo
         onChange={(event) => {
           const file = event.target.files?.[0];
           if (!file) return;
-          if (file.size > 1_500_000) {
-            toast("Choose a photo under 1.5 MB so it can be saved on this device.");
-            return;
-          }
           const reader = new FileReader();
           reader.onload = () => {
             if (typeof reader.result === "string") onPick(reader.result);
