@@ -28,7 +28,7 @@ export function AppLayout() {
   if (!ready) {
     return (
       <div className="splash-screen grid min-h-dvh place-items-center px-8">
-        <img src={images.logoMark} alt="SpotMyRoster" className="h-auto w-full max-w-[18rem]" />
+        <img src={images.logoOnDark} alt="SpotMyRoster" className="h-auto w-full max-w-[18rem]" />
       </div>
     );
   }

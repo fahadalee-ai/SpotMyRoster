@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { Check } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { images } from "@/lib/images";
 import { SAMPLE_OTP, SAMPLE_PASSWORD } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
-import { Btn, Logo, PasswordField, TextField, useCopy, useTitle } from "@/components/athlete/ui";
+import { Btn, PasswordField, TextField, useCopy, useTitle } from "@/components/athlete/ui";
 
 const slides = [
   {
@@ -48,10 +49,10 @@ export function SplashScreen() {
 
   return (
     <div className="splash-screen relative flex min-h-dvh flex-col items-center justify-center px-8 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(2rem,env(safe-area-inset-top))]">
-      <div className="splash-in flex w-full max-w-[20rem] flex-col items-center text-center">
-        <img src={images.logoMark} alt="SpotMyRoster" className="h-auto w-full" />
-        <p className="mt-8 text-sm font-medium tracking-wide text-brand-dark">Find a team. Get seen. Fill the roster.</p>
-        <div className="mt-8 h-1 w-28 overflow-hidden rounded-full bg-brand-dark/10" aria-hidden>
+      <div className="splash-in flex w-full max-w-[18rem] flex-col items-center text-center">
+        <img src={images.logoOnDark} alt="SpotMyRoster" className="h-auto w-full" />
+        <p className="mt-8 text-sm font-medium tracking-wide text-[#d7e4ea]">Find a team. Get seen. Fill the roster.</p>
+        <div className="mt-8 h-1 w-28 overflow-hidden rounded-full bg-white/15" aria-hidden>
           <div className="splash-bar h-full w-1/3 rounded-full bg-brand" />
         </div>
       </div>
@@ -73,33 +74,43 @@ export function OnboardingScreen() {
   };
 
   return (
-    <div className="relative min-h-dvh bg-brand-dark text-white">
+    <div className="relative min-h-dvh bg-[#162830] text-[#f4f8f8]">
       <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
       <div className="onboard-scrim absolute inset-0" />
-      <div className="relative flex min-h-dvh flex-col justify-end px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-8">
-        <div className="mb-4 flex gap-2" aria-hidden>
-          {slides.map((item, dot) => (
-            <span key={item.title} className={`h-1.5 flex-1 rounded-full ${dot === index ? "bg-brand" : "bg-white/35"}`} />
-          ))}
-        </div>
-        <p className="text-sm font-semibold text-brand">
-          {index + 1} / {slides.length}
-        </p>
-        <h1 className="mt-2 font-display text-[2rem] font-semibold leading-tight">{slide.title}</h1>
-        <p className="mt-3 max-w-sm text-base leading-relaxed text-white/85">{slide.body}</p>
-        <div className="mt-6 flex items-center gap-3">
-          <button type="button" onClick={finish} className="min-h-11 px-2 text-sm font-semibold text-white/80">
+      <div className="relative flex min-h-dvh flex-col px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))]">
+        <div className="flex items-center justify-between">
+          <img src={images.logoOnDark} alt="SpotMyRoster" className="h-8 w-auto" />
+          <button type="button" onClick={finish} className="min-h-11 px-1 text-sm font-semibold text-[#d7e4ea]">
             {copy.skip}
           </button>
-          <Btn
-            full
-            onClick={() => {
-              if (index === slides.length - 1) finish();
-              else setIndex((value) => value + 1);
-            }}
-          >
-            {index === slides.length - 1 ? copy.getStarted : copy.next}
-          </Btn>
+        </div>
+        <div className="mt-auto">
+          <div className="mb-4 flex gap-2" aria-hidden>
+            {slides.map((item, dot) => (
+              <span key={item.title} className={`h-1 flex-1 rounded-full ${dot === index ? "bg-brand" : "bg-white/30"}`} />
+            ))}
+          </div>
+          <p className="text-xs font-semibold tracking-wide text-[#d7e4ea]">
+            {index + 1} of {slides.length}
+          </p>
+          <h1 className="mt-2 max-w-[18rem] font-display text-[2rem] font-semibold leading-[1.15]">{slide.title}</h1>
+          <p className="mt-3 max-w-sm text-base leading-relaxed text-[#d7e4ea]">{slide.body}</p>
+          <div className="mt-6 flex items-center gap-3">
+            {index > 0 && (
+              <button type="button" onClick={() => setIndex((value) => value - 1)} className="min-h-11 px-2 text-sm font-semibold text-[#d7e4ea]">
+                Back
+              </button>
+            )}
+            <Btn
+              full
+              onClick={() => {
+                if (index === slides.length - 1) finish();
+                else setIndex((value) => value + 1);
+              }}
+            >
+              {index === slides.length - 1 ? copy.getStarted : copy.next}
+            </Btn>
+          </div>
         </div>
       </div>
     </div>
@@ -132,32 +143,38 @@ export function LoginScreen() {
   };
 
   return (
-    <AuthFrame title="Welcome back" subtitle="Athlete and parent sign-in. Coaches use the separate Coach app.">
+    <AuthFrame
+      eyebrow="Athlete and parent"
+      title="Welcome back"
+      subtitle="Coaches sign in through the separate Coach app."
+      footer={
+        <p className="text-center text-sm text-[#d7e4ea]">
+          New here?{" "}
+          <Link to="/register" className="auth-link font-semibold">Create an account</Link>
+        </p>
+      }
+    >
       <form className="space-y-4" onSubmit={submit} noValidate>
         <TextField label="Email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} />
         <PasswordField label="Password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} />
-        {formError && <p className="text-sm text-destructive" role="alert">{formError}</p>}
-        <div className="text-right">
-          <Link to="/forgot-password" className="text-sm font-semibold text-link">Forgot password</Link>
+        <div className="-mt-1 text-right">
+          <Link to="/forgot-password" className="auth-link text-sm font-semibold">Forgot password</Link>
         </div>
+        {formError && <p className="text-sm text-[#ffb4ab]" role="alert">{formError}</p>}
         <Btn type="submit" full loading={loading} disabled={!ready}>{copy.signIn}</Btn>
       </form>
-      <div className="mt-6 rounded-3xl bg-card p-4 ring-1 ring-border">
-        <p className="text-sm font-semibold">Sample accounts</p>
-        <p className="mt-1 text-xs text-muted-foreground">Password {SAMPLE_PASSWORD}. Nothing here is a live roster.</p>
+      <div className="mt-6 rounded-3xl bg-white/5 p-4 ring-1 ring-white/10">
+        <p className="text-sm font-semibold">Try a sample account</p>
+        <p className="auth-muted mt-1 text-xs">Password {SAMPLE_PASSWORD}. These profiles are sample data only.</p>
         <div className="mt-3 grid gap-2">
-          <button type="button" className="min-h-11 rounded-2xl bg-elevated px-3 text-left text-sm" onClick={() => { setEmail("jordan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); }}>
-            Athlete · Jordan Hale
+          <button type="button" className="min-h-11 rounded-2xl bg-[#1c3340] px-3 text-left text-sm ring-1 ring-white/10" onClick={() => { setEmail("jordan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); setFormError(""); }}>
+            Jordan Hale · Athlete
           </button>
-          <button type="button" className="min-h-11 rounded-2xl bg-elevated px-3 text-left text-sm" onClick={() => { setEmail("morgan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); }}>
-            Parent · Morgan Hale
+          <button type="button" className="min-h-11 rounded-2xl bg-[#1c3340] px-3 text-left text-sm ring-1 ring-white/10" onClick={() => { setEmail("morgan@sample.spotmyroster.com"); setPassword(SAMPLE_PASSWORD); setFormError(""); }}>
+            Morgan Hale · Parent
           </button>
         </div>
       </div>
-      <p className="mt-6 text-sm text-muted-foreground">
-        New here?{" "}
-        <Link to="/register" className="font-semibold text-link">Create an account</Link>
-      </p>
     </AuthFrame>
   );
 }
@@ -192,7 +209,17 @@ export function RegisterScreen() {
   };
 
   return (
-    <AuthFrame title="Create your account" subtitle="Choose athlete if this login is for one athlete. Choose parent if you will manage one or more athletes.">
+    <AuthFrame
+      backTo="/login"
+      eyebrow="Create account"
+      title="Join SpotMyRoster"
+      subtitle="Athlete is one player. Parent is for managing one or more athletes."
+      footer={
+        <p className="text-center text-sm text-[#d7e4ea]">
+          Already registered? <Link to="/login" className="auth-link font-semibold">Sign in</Link>
+        </p>
+      }
+    >
       <form className="space-y-4" onSubmit={submit} noValidate>
         <fieldset>
           <legend className="mb-2 text-[0.8125rem] font-semibold">I am a</legend>
@@ -203,9 +230,9 @@ export function RegisterScreen() {
                 type="button"
                 aria-pressed={role === option}
                 onClick={() => setRole(option)}
-                className={`min-h-12 rounded-2xl px-3 text-sm font-semibold ring-1 ${role === option ? "bg-primary text-primary-foreground ring-transparent" : "bg-elevated ring-border"}`}
+                className={`min-h-12 rounded-2xl px-3 text-sm font-semibold ring-1 ${role === option ? "bg-primary text-primary-foreground ring-transparent" : "bg-[#1c3340] text-[#f4f8f8] ring-white/10"}`}
               >
-                {option === "athlete" ? "Athlete" : "Parent / guardian"}
+                {option === "athlete" ? "Athlete" : "Parent"}
               </button>
             ))}
           </div>
@@ -222,18 +249,15 @@ export function RegisterScreen() {
           <input type="checkbox" className="mt-1 size-5 accent-[var(--brand-dark)]" checked={terms} onChange={(event) => setTerms(event.target.checked)} />
           <span>
             I have read the{" "}
-            <Link to="/legal/$doc" params={{ doc: "terms" }} className="font-semibold text-link underline">Terms</Link>
+            <Link to="/legal/$doc" params={{ doc: "terms" }} className="auth-link font-semibold underline">Terms</Link>
             {" "}and{" "}
-            <Link to="/legal/$doc" params={{ doc: "privacy" }} className="font-semibold text-link underline">Privacy</Link>
+            <Link to="/legal/$doc" params={{ doc: "privacy" }} className="auth-link font-semibold underline">Privacy</Link>
             {" "}notices. Official legal copy has not been published in this sample.
           </span>
         </label>
-        {formError && <p className="text-sm text-destructive">{formError}</p>}
+        {formError && <p className="text-sm text-[#ffb4ab]">{formError}</p>}
         <Btn type="submit" full loading={loading}>Create account</Btn>
       </form>
-      <p className="mt-6 text-sm text-muted-foreground">
-        Already registered? <Link to="/login" className="font-semibold text-link">Sign in</Link>
-      </p>
     </AuthFrame>
   );
 }
@@ -249,7 +273,7 @@ export function ForgotScreen() {
   };
 
   return (
-    <AuthFrame title="Reset your password" subtitle="We will ask for the sample verification code next. No email is sent.">
+    <AuthFrame backTo="/login" title="Reset your password" subtitle="Next you’ll enter the sample code. No email is sent.">
       <form className="space-y-4" onSubmit={submit} noValidate>
         <TextField label="Email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
         <Btn type="submit" full>Send code</Btn>
@@ -277,19 +301,23 @@ export function VerifyScreen({ purpose, email }: { purpose: "email" | "reset"; e
 
   return (
     <AuthFrame
+      backTo={purpose === "email" ? "/register" : "/forgot-password"}
       title={purpose === "email" ? "Confirm your email" : "Enter the code"}
-      subtitle={`Sample code ${SAMPLE_OTP}. This build does not send a real message.`}
+      subtitle={email ? `For ${email}. Nothing is sent from this sample.` : "Nothing is sent from this sample."}
     >
       <form className="space-y-4" onSubmit={submit}>
+        <p className="rounded-2xl bg-white/5 px-4 py-3 text-sm ring-1 ring-white/10">
+          Sample code <span className="font-semibold tracking-wide">{SAMPLE_OTP}</span>
+        </p>
         <TextField
-          label="6-digit code"
+          label="Verification code"
           inputMode="numeric"
           autoComplete="one-time-code"
           value={code}
           onChange={(event) => setCode(event.target.value)}
         />
         <Btn type="submit" full>Verify</Btn>
-        <button type="button" className="min-h-11 text-sm font-semibold text-link" onClick={() => toast("Sample code is still 482913")}>
+        <button type="button" className="auth-link min-h-11 text-sm font-semibold" onClick={() => toast("Sample code is still 482913")}>
           Resend sample code
         </button>
       </form>
@@ -317,7 +345,7 @@ export function ResetScreen() {
   };
 
   return (
-    <AuthFrame title="Choose a new password" subtitle="This change is stored only on this device.">
+    <AuthFrame backTo="/forgot-password" title="Choose a new password" subtitle="This change is stored only on this device.">
       <form className="space-y-4" onSubmit={submit} noValidate>
         <PasswordField label="New password" value={password} onChange={(event) => setPassword(event.target.value)} />
         <PasswordField label="Confirm password" value={confirm} onChange={(event) => setConfirm(event.target.value)} />
@@ -331,7 +359,8 @@ export function PasswordUpdatedScreen() {
   const navigate = useNavigate();
   useTitle("Password updated");
   return (
-    <AuthFrame title="Password updated" subtitle="Sign in with the new password. This change is stored only on this device.">
+    <AuthFrame title="Password updated" subtitle="Sign in with the new password. This change stays on this device.">
+      <StatusMark />
       <Btn full onClick={() => navigate({ to: "/login", replace: true })}>Back to sign in</Btn>
     </AuthFrame>
   );
@@ -341,19 +370,53 @@ export function AuthSuccessScreen() {
   const navigate = useNavigate();
   useTitle("Account ready");
   return (
-    <AuthFrame title="You’re in" subtitle="Next, finish the athlete profile. You can save and come back before it is complete.">
+    <AuthFrame title="You’re in" subtitle="Finish the athlete profile next. You can save and come back before it is complete.">
+      <StatusMark />
       <Btn full onClick={() => navigate({ to: "/setup", replace: true })}>Set up the athlete profile</Btn>
     </AuthFrame>
   );
 }
 
-function AuthFrame({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
+function StatusMark() {
   return (
-    <div className="min-h-dvh bg-background px-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
-      <Logo compact plain />
-      <h1 className="mt-6 font-display text-[2rem] font-semibold leading-tight">{title}</h1>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
-      <div className="mt-6">{children}</div>
+    <div className="mb-5 grid size-12 place-items-center rounded-2xl bg-brand text-brand-dark" aria-hidden>
+      <Check size={22} strokeWidth={2.5} />
+    </div>
+  );
+}
+
+function AuthFrame({
+  title,
+  subtitle,
+  eyebrow,
+  backTo,
+  footer,
+  children,
+}: {
+  title: string;
+  subtitle: string;
+  eyebrow?: string;
+  backTo?: "/login" | "/register" | "/forgot-password";
+  footer?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="auth-screen">
+      <div className="mx-auto flex min-h-dvh w-full max-w-[26.5rem] flex-col px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))]">
+        <div className="flex h-11 items-center">
+          {backTo ? (
+            <Link to={backTo} className="inline-flex min-h-11 items-center text-sm font-semibold text-[#d7e4ea]">
+              Back
+            </Link>
+          ) : null}
+        </div>
+        <img src={images.logoOnDark} alt="SpotMyRoster" className="mt-2 h-9 w-auto self-start" />
+        {eyebrow && <p className="mt-8 text-xs font-semibold tracking-[0.14em] text-[#00e5ff] uppercase">{eyebrow}</p>}
+        <h1 className={`${eyebrow ? "mt-2" : "mt-8"} font-display text-[1.85rem] font-semibold leading-[1.15]`}>{title}</h1>
+        <p className="auth-muted mt-2 text-sm leading-relaxed">{subtitle}</p>
+        <div className="mt-6">{children}</div>
+        {footer && <div className="mt-auto pt-8">{footer}</div>}
+      </div>
     </div>
   );
 }

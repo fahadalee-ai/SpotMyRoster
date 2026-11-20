@@ -190,12 +190,9 @@
 }
 
 .onboard-scrim {
-  background: linear-gradient(
-    to top,
-    var(--brand-dark) 0%,
-    color-mix(in srgb, var(--brand-dark) 82%, transparent) 46%,
-    color-mix(in srgb, var(--brand-dark) 18%, transparent) 100%
-  );
+  background:
+    linear-gradient(to bottom, #162830 0%, transparent 28%),
+    linear-gradient(to top, #162830 0%, color-mix(in srgb, #162830 92%, transparent) 46%, transparent 78%);
 }
 
 @keyframes splash-in {
@@ -218,10 +215,46 @@
 [data-theme="light"] .auth-logo-light { display: inline; }
 
 .splash-screen {
-  background:
-    radial-gradient(ellipse 70% 45% at 50% 42%, color-mix(in srgb, var(--brand-primary) 28%, transparent), transparent 70%),
-    #f3f6f7;
-  color: var(--brand-dark);
+  background: #162830;
+  color: #f4f8f8;
+}
+
+.auth-screen {
+  min-height: 100dvh;
+  background: #162830;
+  color: #f4f8f8;
+  color-scheme: dark;
+}
+
+.auth-screen input,
+.auth-screen textarea,
+.auth-screen select {
+  background-color: #1c3340;
+  color: #f4f8f8;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.auth-screen input:focus,
+.auth-screen textarea:focus,
+.auth-screen select:focus {
+  box-shadow: inset 0 0 0 2px #00e5ff;
+}
+
+.auth-screen label > span,
+.auth-screen legend {
+  color: #d7e4ea;
+}
+
+.auth-muted {
+  color: #b7c9d0;
+}
+
+.auth-screen a {
+  color: #f4f8f8;
+}
+
+.auth-screen .auth-link {
+  color: #00e5ff;
 }
 
 @keyframes splash-bar {
