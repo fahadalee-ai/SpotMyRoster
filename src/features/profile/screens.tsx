@@ -28,7 +28,8 @@ export function ProfileScreen() {
         <Link to="/profile/edit" className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-3 text-sm font-semibold ring-1 ring-border">Edit</Link>
         <Link to="/applications" className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-3 text-sm font-semibold ring-1 ring-border">Applications</Link>
         <Link to="/saved" className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-3 text-sm font-semibold ring-1 ring-border">Saved teams</Link>
-        <Link to="/profile/stats" className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-3 text-sm font-semibold ring-1 ring-border">Stats</Link>
+        <Link to="/profile/emma" className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-3 text-sm font-semibold ring-1 ring-border">Emma Davis</Link>
+        <Link to="/profile/stats" search={{ sheet: "batting" }} className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-3 text-sm font-semibold ring-1 ring-border">Stats</Link>
         <Link to="/subscription" className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-3 text-sm font-semibold ring-1 ring-border">Membership</Link>
       </div>
       <div className="mt-5 grid grid-cols-2 gap-2">

@@ -1,181 +1,128 @@
 import { Link } from "@tanstack/react-router";
-import { Bell, CalendarDays, ClipboardList, Search } from "lucide-react";
-import type { ReactNode } from "react";
-import { courses, events, openings, teams } from "@/lib/mock-data";
-import { useApp } from "@/lib/store";
-import { athleteName, completeness, formatShort } from "@/lib/format";
-import { courseImage } from "@/lib/images";
-import { ApplicationRow, EventCard, TeamCard } from "@/components/athlete/cards";
-import { Avatar, CardSkeleton, EmptyState, ErrorState, Logo, ProgressBar, PullToRefresh, useCopy, useListState, useTitle } from "@/components/athlete/ui";
+import { Bell, MapPin, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { images } from "@/lib/images";
+import { isPremium } from "@/lib/premium";
+import { mapsUrl } from "@/lib/format";
+import { useTitle } from "@/components/athlete/ui";
+
+const sports = [
+  ["baseball", "Baseball", "⚾"],
+  ["softball", "Softball", "🥎"],
+  ["soccer", "Soccer", "⚽"],
+  ["basketball", "Basketball", "🏀"],
+  ["football", "Football", "🏈"],
+  ["volleyball", "Volleyball", "🏐"],
+  ["track-and-field", "Track and Field", "👟"],
+  ["lacrosse", "Lacrosse", "🥍"],
+  ["ice-hockey", "Ice Hockey", "🏒"],
+] as const;
+
+const upcoming = [
+  { day: "14", month: "MAR", title: "Ridgeline U14 — Spring Tryout", place: "Maple Grove Park, Oakland CA, 9:30 AM · 4.1 mi", kind: "Tryout" },
+  { day: "16", month: "MAR", title: "Northside Invitational — Pool B", place: "Cedar Field, Berkeley CA, 11:00 AM · 7.8 mi", kind: "Tournament" },
+  { day: "04", month: "APR", title: "Spring Skills Camp (Day 1)", place: "Fairview Complex, Hayward CA, 8:00 AM · 12.3 mi", kind: "Tournament" },
+];
 
 export function HomeScreen() {
-  const { athlete, applications, conversations, messages, notifications, enrollments } = useApp();
-  const copy = useCopy();
-  const list = useListState();
-  useTitle(copy.home);
-  if (!athlete) return null;
-
-  const hour = new Date().getHours();
-  const hello = hour < 12 ? copy.goodMorning : hour < 17 ? copy.goodAfternoon : copy.goodEvening;
-  const mine = applications.filter((item) => item.athleteId === athlete.id);
-  const active = mine.filter((item) => !["withdrawn", "declined", "accepted"].includes(item.status));
-  const unreadNotes = notifications.filter((item) => !item.read && (!item.athleteId || item.athleteId === athlete.id)).length;
-  const recommended = openings
-    .map((opening) => ({ opening, team: teams.find((team) => team.id === opening.teamId) }))
-    .filter((row) => row.team && athlete.sports.includes(row.team.sport) && row.team.distanceMiles <= athlete.travelRadius)
-    .slice(0, 3);
-  const upcoming = events
-    .filter((event) => event.start.slice(0, 10) >= new Date().toISOString().slice(0, 10))
-    .filter((event) => athlete.sports.includes(event.sport))
-    .slice(0, 2);
-  const thread = conversations.find((item) => item.athleteId === athlete.id);
-  const lastMessage = thread
-    ? messages.filter((item) => item.conversationId === thread.id).sort((a, b) => (a.at < b.at ? 1 : -1))[0]
-    : undefined;
-  const enrollment = enrollments.find((item) => item.athleteId === athlete.id);
-  const course = courses.find((item) => item.id === enrollment?.courseId);
-  const courseProgress = course && enrollment
-    ? Math.round((enrollment.completedLessonIds.length / course.lessons.length) * 100)
-    : 0;
-  const score = completeness(athlete);
-  const place = [athlete.city, athlete.state].filter(Boolean).join(", ");
-  const role = athlete.positions.join(" / ") || athlete.sports.join(", ");
-  const meta = [place, role].filter(Boolean).join(" · ");
+  const [plan, setPlan] = useState("Parent Account");
+  useTitle("Dashboard");
+  useEffect(() => {
+    setPlan(isPremium() ? "Premium Parent Account" : "Free Parent Account");
+  }, []);
 
   return (
-    <PullToRefresh onRefresh={list.refresh}>
-      <div className="px-5 pb-28 pt-[max(0.75rem,env(safe-area-inset-top))]">
-        <header className="flex h-12 items-center justify-between gap-3">
-          <Logo compact plain className="h-7" />
-          <div className="flex shrink-0 items-center gap-2">
-            <Link to="/search" aria-label={copy.search} className="inline-flex size-11 items-center justify-center rounded-full bg-elevated ring-1 ring-border">
-              <Search size={18} />
-            </Link>
-            <Link to="/notifications" aria-label={copy.notifications} className="relative inline-flex size-11 items-center justify-center rounded-full bg-elevated ring-1 ring-border">
+    <div className="min-h-dvh bg-background pb-8 text-foreground">
+      <header className="bg-background px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+        <div className="flex items-center justify-between gap-3">
+          <img src={images.logoOnDark} alt="SpotMyRoster" className="h-8 w-auto" />
+          <div className="flex items-center gap-2">
+            <Link to="/notifications" aria-label="Notifications" className="inline-flex size-10 items-center justify-center rounded-full bg-elevated text-foreground">
               <Bell size={18} />
-              {unreadNotes > 0 && <span className="absolute right-2.5 top-2.5 size-2 rounded-full bg-primary" />}
             </Link>
-            <Link to="/profile" aria-label={copy.profile} className="inline-flex">
-              <Avatar name={athleteName(athlete)} src={athlete.photoUrl} size={44} />
-            </Link>
+            <span className="flex min-w-0 items-center gap-2">
+              <Link to="/profile" aria-label="My Athlete" className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">JD</Link>
+              <span className="min-w-0">
+                <Link to="/profile" className="block truncate text-xs font-semibold leading-tight">Jordan Davis</Link>
+                <Link to="/subscription" className="block truncate text-[10px] leading-tight text-muted-foreground">{plan}</Link>
+              </span>
+            </span>
           </div>
-        </header>
+        </div>
+        <Link to="/search" className="mt-3 flex h-11 items-center gap-2 rounded-full bg-elevated px-4 text-sm text-muted-foreground">
+          <Search size={16} />
+          Search tryouts, teams, tournaments, or trainers
+        </Link>
+      </header>
 
-        <p className="mt-6 text-sm font-medium text-muted-foreground">{hello}</p>
-        <h1 className="mt-1 font-display text-[1.75rem] font-semibold leading-none">{athlete.firstName || "Athlete"}</h1>
-        {meta && <p className="mt-2 text-sm leading-5 text-muted-foreground">{meta}</p>}
+      <div className="px-4 pt-5">
+        <p className="text-[11px] font-semibold tracking-[0.14em] text-primary">TUESDAY, MARCH 12</p>
+        <h1 className="mt-2 font-display text-[1.85rem] font-semibold uppercase leading-[0.95] tracking-tight">
+          Good morning, Jordan —
+        </h1>
+        <p className="mt-2 text-sm leading-5 text-muted-foreground">
+          Emma has a tryout this weekend and 2 tournaments on the radar. Here's what's moving.
+        </p>
 
-        {list.loading ? (
-          <div className="mt-6">
-            <CardSkeleton />
-          </div>
-        ) : list.error ? (
-          <div className="mt-6">
-            <ErrorState title="Home didn’t load" body="Check the connection and try again." onRetry={list.refresh} />
-          </div>
-        ) : (
-          <div className="mt-6 space-y-7">
-            <Link to="/profile/edit" className="block rounded-3xl bg-card p-4 ring-1 ring-border">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="font-semibold leading-none">Profile strength</p>
-                <span className="text-sm font-semibold leading-none text-link">{score}%</span>
-              </div>
-              <ProgressBar value={score} />
-            </Link>
-
-            <div className="grid grid-cols-3 items-stretch gap-2">
-              <Quick to="/teams" icon={<Search size={18} />} label={copy.findTeams} />
-              <Quick to="/applications" icon={<ClipboardList size={18} />} label={copy.myApplications} />
-              <Quick to="/events" icon={<CalendarDays size={18} />} label={copy.upcomingTryouts} />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <HomeLink to="/discover" title="Discover" detail="Teams by sport" />
-              <HomeLink to="/opportunities" title="Opportunities" detail="Applications and inquiries" />
-              <HomeLink to="/trainings" title="Trainings" detail="Camps and lessons" />
-              <HomeLink to="/tournaments" title="Tournaments" detail="Weekend events" />
-              <HomeLink to="/profile/stats" title="Stats" detail="Sport numbers" />
-              <HomeLink to="/subscription" title="Premium" detail="$9.99 yearly" />
-            </div>
-
-            <section>
-              <div className="mb-3 flex h-8 items-center justify-between gap-3">
-                <h2 className="font-display text-lg font-semibold leading-none">Applications</h2>
-                <Link to="/applications" className="text-sm font-semibold leading-none text-link">See all</Link>
-              </div>
-              {active.length === 0 ? (
-                <EmptyState title="No open applications" body="When you apply to a roster spot, the status shows up here." to="/teams" action={copy.findTeams} />
-              ) : (
-                <div className="space-y-3">
-                  {active.slice(0, 2).map((item) => (
-                    <ApplicationRow key={item.id} application={item} />
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section>
-              <h2 className="mb-3 font-display text-lg font-semibold leading-none">Open spots in range</h2>
-              {recommended.length === 0 ? (
-                <EmptyState title="Nothing in range" body="Widen the travel radius on the profile, or browse every opening." to="/teams" action="Browse teams" />
-              ) : (
-                <div className="space-y-3">
-                  {recommended.map((row) => row.team && <TeamCard key={row.opening.id} team={row.team} opening={row.opening} />)}
-                </div>
-              )}
-            </section>
-
-            <section>
-              <div className="mb-3 flex h-8 items-center justify-between gap-3">
-                <h2 className="font-display text-lg font-semibold leading-none">Upcoming</h2>
-                <Link to="/events" className="text-sm font-semibold leading-none text-link">Calendar</Link>
-              </div>
-              <div className="space-y-3">
-                {upcoming.length === 0 && <p className="text-sm text-muted-foreground">No upcoming events for these sports.</p>}
-                {upcoming.map((event) => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </div>
-            </section>
-
-            {lastMessage && thread && (
-              <Link to="/chat/$conversationId" params={{ conversationId: thread.id }} className="block rounded-3xl bg-card p-4 ring-1 ring-border">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Latest message</p>
-                <p className="mt-1 line-clamp-2 text-sm">{lastMessage.body}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{formatShort(lastMessage.at)}</p>
-              </Link>
-            )}
-
-            {course && (
-              <Link to="/learn/$courseId" params={{ courseId: course.id }} className="flex gap-3 overflow-hidden rounded-3xl bg-card ring-1 ring-border">
-                <img src={courseImage(course.image)} alt="" className="h-28 w-28 object-cover" />
-                <span className="py-3 pr-3">
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-muted-foreground">Continue learning</span>
-                  <span className="mt-1 block font-semibold">{course.title}</span>
-                  <span className="mt-2 block text-sm text-muted-foreground">{courseProgress}% complete</span>
+        <section className="mt-5 rounded-3xl bg-card p-4 ring-1 ring-border">
+          <h2 className="font-display text-sm font-semibold uppercase leading-5 tracking-wide">
+            What are you looking for, for Emma?
+          </h2>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {sports.map(([id, label, icon]) => (
+              <Link key={id} to="/sports/$sportId" params={{ sportId: id }} className="flex min-h-[5.5rem] flex-col items-center justify-center gap-2 rounded-2xl bg-elevated px-1 py-3 text-center">
+                <span className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-lg" aria-hidden>
+                  {icon}
                 </span>
+                <span className="text-[10px] font-semibold uppercase leading-3 tracking-wide">{label}</span>
               </Link>
-            )}
+            ))}
           </div>
-        )}
+        </section>
+
+        <section className="mt-6">
+          <h2 className="font-display text-sm font-semibold uppercase tracking-wide">Upcoming for Emma</h2>
+          <div className="mt-3 space-y-2">
+            {upcoming.map((item) => (
+              <Link key={item.title} to="/events" className="flex items-center gap-3 rounded-2xl bg-card px-3 py-3 ring-1 ring-border">
+                <span className="inline-flex size-12 shrink-0 flex-col items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                  <span className="text-sm font-bold leading-none">{item.day}</span>
+                  <span className="mt-0.5 text-[9px] font-semibold tracking-wide">{item.month}</span>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-xs font-bold uppercase">{item.title}</span>
+                  <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">{item.place}</span>
+                </span>
+                <span className="shrink-0 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold text-primary-foreground">{item.kind}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-4 rounded-3xl bg-primary p-4 text-primary-foreground">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em]">Upcoming events</p>
+          <h3 className="mt-1 font-display text-base font-semibold uppercase leading-tight">Ridgeline U14 — Spring Tryout</h3>
+          <p className="mt-2 text-sm">Ridgeline U14 — Spring Tryout</p>
+          <p className="text-sm">Saturday, March 14 · 9:30 AM</p>
+          <p className="mt-2 flex items-start gap-1.5 text-sm">
+            <MapPin size={14} className="mt-0.5 shrink-0" />
+            <span>Maple Grove Park<br />[Full address when available]</span>
+          </p>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <Link to="/events" className="flex h-10 items-center justify-center rounded-full bg-background text-xs font-semibold text-foreground">View Calendar</Link>
+            <a href={mapsUrl("Maple Grove Park, Oakland, CA")} className="flex h-10 items-center justify-center rounded-full bg-background text-xs font-semibold text-foreground">Get Directions</a>
+          </div>
+        </section>
+
+        <section className="mt-3 rounded-3xl bg-card p-4 ring-1 ring-border">
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="font-display text-sm font-semibold uppercase tracking-wide">Saved opportunities</h3>
+            <span className="text-2xl font-semibold leading-none">12</span>
+          </div>
+          <p className="mt-2 text-sm text-muted-foreground">3 new matches since Monday</p>
+          <Link to="/saved" className="mt-4 inline-flex h-9 items-center rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground">View All</Link>
+        </section>
       </div>
-    </PullToRefresh>
-  );
-}
-
-function HomeLink({ to, title, detail }: { to: "/discover" | "/opportunities" | "/trainings" | "/tournaments" | "/profile/stats" | "/subscription"; title: string; detail: string }) {
-  return (
-    <Link to={to} className="rounded-3xl bg-card px-3 py-3 ring-1 ring-border">
-      <span className="block text-sm font-semibold">{title}</span>
-      <span className="mt-1 block text-xs text-muted-foreground">{detail}</span>
-    </Link>
-  );
-}
-
-function Quick({ to, icon, label }: { to: "/teams" | "/applications" | "/events"; icon: ReactNode; label: string }) {
-  return (
-    <Link to={to} className="flex h-full min-h-[6.75rem] flex-col items-center justify-center gap-2.5 rounded-3xl bg-card px-2 py-3 text-center ring-1 ring-border">
-      <span className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">{icon}</span>
-      <span className="text-xs font-semibold leading-4">{label}</span>
-    </Link>
+    </div>
   );
 }

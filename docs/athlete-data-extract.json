@@ -1,0 +1,70 @@
+{
+  "source": "Spot my roster Coach dashboard 0.2 (1).fig",
+  "note": "Only strings recovered from the file. Values are not guessed.",
+  "account": {
+    "parentName": "Jordan Davis",
+    "parentLabel": "Parent Account"
+  },
+  "emmaDavis": {
+    "name": "Emma Davis",
+    "line": "Emma Davis U14",
+    "sport": "Baseball",
+    "location": "Charlotte, NC",
+    "match": "92% Match",
+    "guardianLabel": "Parent / guardian",
+    "guardian": "Sarah Davis",
+    "guardianNote": "Contact details are shared once the parent replies."
+  },
+  "signupCopy": {
+    "tagline": ["UNLEASH YOUR", "ATHLETE'S", "POTENTIAL."],
+    "createAccount": "Create Your Account",
+    "join": "Join SpotMyRoster and find the right opportunities.",
+    "role": "PARENT / ATHLETE",
+    "roleLine": "Find teams, tryouts & opportunities",
+    "coachRole": "Build your team and connect with players",
+    "athleteStepTitle": "Tell Us About Your Athlete",
+    "athleteStepBody": "This helps us show you more relevant opportunities.",
+    "fields": ["ATHLETE FIRST NAME", "ATHLETE LAST NAME", "PRIMARY POSITION", "SECONDARY POSITION (OPTIONAL)", "SKILL LEVEL"],
+    "linkNote": "This athlete profile will be linked to Jordan's parent account.",
+    "welcome": "Welcome to SpotMyRoster, Jordan."
+  },
+  "navigationLabelsSeen": ["Dashboard", "Discover", "My Opportunities", "Saved", "Calendar", "Messages", "My Athlete", "Subscription", "Tournaments", "Trainings", "Browse team"],
+  "discover": {
+    "title": "Everything open near you",
+    "body": "Browse by sport or scan the latest listings within 15 miles of Oakland."
+  },
+  "tryouts": {
+    "title": "Baseball Tryouts",
+    "count": "1 result within 10 miles of Oakland, CA.",
+    "tags": ["Featured", "Oakland, CA", "Pitcher / Outfield"]
+  },
+  "opportunities": {
+    "title": "Registrations & inquiries",
+    "body": "Everything you've applied to or asked about, with the latest status from each organizer.",
+    "examples": ["Ridgeline Softball Club", "Northside Athletics", "Awaiting reply", "Spring Skills Camp", "Fairview Academy", "Inquiry sent"]
+  },
+  "teams": [
+    {"name": "Northstar United", "tag": "Roster opening", "bits": ["Soccer", "U14", "Boys", "Bellevue, WA"]},
+    {"name": "Lake Union Juniors", "tag": "Featured", "bits": ["Girls", "Seattle, WA"]},
+    {"name": "Rain City Select", "tag": "Featured", "bits": ["Co-ed"]}
+  ],
+  "tournaments": [
+    {"name": "Emerald City Spring Classic", "dates": "Apr 17–18, 2027", "place": "Tukwila, WA", "venue": "Starfire Sports Complex"},
+    {"name": "Puget Sound Cup", "dates": "May 22–24, 2027", "place": "Redmond, WA", "venue": "Marymoor Park"},
+    {"name": "Summer Shootout", "dates": "Jul 10–11, 2027", "place": "Bellevue, WA", "venue": "Sammamish High School"}
+  ],
+  "trainings": {
+    "title": "Available trainings",
+    "search": "Search by sport, skill, coach, or location",
+    "count": "24 trainings",
+    "place": "near Oakland, CA",
+    "namesFound": ["Fall Pitching Camp", "Carter Hoops Training", "Summer Softball Camp", "Speed & Agility Training", "Spring Skills Camp", "Summer Skills Camp - Ball Handling"]
+  },
+  "premium": {
+    "title": "Unlock Parent & Athlete Premium",
+    "price": "$9.99 yearly",
+    "upgrade": "Upgrade to Parent Premium",
+    "reviewLine": "You are upgrading Jordan Davis (Parent Account) to a Premium Athlete Membership."
+  },
+  "searchPlaceholder": "Search tryouts, teams, tournaments, or trainers"
+}

@@ -138,7 +138,7 @@ export function TeamDetailScreen({ teamId }: { teamId: string }) {
   return (
     <div className="min-h-dvh">
       <div className="relative">
-        <img src={teamCover(team.id)} alt="" className="h-56 w-full object-cover" />
+        <img src={teamCover(team.id)} alt={`${team.name}, ${team.sport}`} className="h-56 w-full object-cover" />
         <div className="absolute left-4 top-[max(0.75rem,env(safe-area-inset-top))]">
           <IconButton label="Back" onClick={() => navigate({ to: "/teams" })} className="bg-background/90">
             <span aria-hidden>←</span>

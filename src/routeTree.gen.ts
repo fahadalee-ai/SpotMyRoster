@@ -42,10 +42,16 @@ import { Route as AppLearnIndexRouteImport } from './routes/_app/learn/index'
 import { Route as AppLearnCourseIdRouteImport } from './routes/_app/learn/$courseId'
 import { Route as AppLearnMineRouteImport } from './routes/_app/learn/mine'
 import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
+import { Route as AppProfileAddRouteImport } from './routes/_app/profile/add'
 import { Route as AppProfileEditRouteImport } from './routes/_app/profile/edit'
+import { Route as AppProfileEmmaRouteImport } from './routes/_app/profile/emma'
+import { Route as AppProfileMediaRouteImport } from './routes/_app/profile/media'
 import { Route as AppProfilePreviewRouteImport } from './routes/_app/profile/preview'
+import { Route as AppProfileRecruitingRouteImport } from './routes/_app/profile/recruiting'
 import { Route as AppProfileStatsRouteImport } from './routes/_app/profile/stats'
 import { Route as AppSubscriptionIndexRouteImport } from './routes/_app/subscription/index'
+import { Route as AppSubscriptionCompareRouteImport } from './routes/_app/subscription/compare'
+import { Route as AppSubscriptionManageRouteImport } from './routes/_app/subscription/manage'
 import { Route as AppSubscriptionPaymentRouteImport } from './routes/_app/subscription/payment'
 import { Route as AppSubscriptionSuccessRouteImport } from './routes/_app/subscription/success'
 import { Route as AppSubscriptionUpgradeRouteImport } from './routes/_app/subscription/upgrade'
@@ -55,6 +61,8 @@ import { Route as AppTournamentsIndexRouteImport } from './routes/_app/tournamen
 import { Route as AppTournamentsTournamentIdRouteImport } from './routes/_app/tournaments/$tournamentId'
 import { Route as AppTrainingsIndexRouteImport } from './routes/_app/trainings/index'
 import { Route as AppTrainingsTrainingIdRouteImport } from './routes/_app/trainings/$trainingId'
+import { Route as AppSportsSportIdIndexRouteImport } from './routes/_app/sports/$sportId/index'
+import { Route as AppSportsSportIdListingIdRouteImport } from './routes/_app/sports/$sportId/$listingId'
 import { Route as AppLearnCourseIdLessonsLessonIdRouteImport } from './routes/_app/learn/$courseId/lessons/$lessonId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -222,14 +230,34 @@ const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppProfileAddRoute = AppProfileAddRouteImport.update({
+  id: '/profile/add',
+  path: '/profile/add',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppProfileEditRoute = AppProfileEditRouteImport.update({
   id: '/profile/edit',
   path: '/profile/edit',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppProfileEmmaRoute = AppProfileEmmaRouteImport.update({
+  id: '/profile/emma',
+  path: '/profile/emma',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProfileMediaRoute = AppProfileMediaRouteImport.update({
+  id: '/profile/media',
+  path: '/profile/media',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppProfilePreviewRoute = AppProfilePreviewRouteImport.update({
   id: '/profile/preview',
   path: '/profile/preview',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppProfileRecruitingRoute = AppProfileRecruitingRouteImport.update({
+  id: '/profile/recruiting',
+  path: '/profile/recruiting',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppProfileStatsRoute = AppProfileStatsRouteImport.update({
@@ -240,6 +268,16 @@ const AppProfileStatsRoute = AppProfileStatsRouteImport.update({
 const AppSubscriptionIndexRoute = AppSubscriptionIndexRouteImport.update({
   id: '/subscription/',
   path: '/subscription/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSubscriptionCompareRoute = AppSubscriptionCompareRouteImport.update({
+  id: '/subscription/compare',
+  path: '/subscription/compare',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSubscriptionManageRoute = AppSubscriptionManageRouteImport.update({
+  id: '/subscription/manage',
+  path: '/subscription/manage',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppSubscriptionPaymentRoute = AppSubscriptionPaymentRouteImport.update({
@@ -288,6 +326,17 @@ const AppTrainingsTrainingIdRoute = AppTrainingsTrainingIdRouteImport.update({
   path: '/trainings/$trainingId',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppSportsSportIdIndexRoute = AppSportsSportIdIndexRouteImport.update({
+  id: '/sports/$sportId/',
+  path: '/sports/$sportId/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppSportsSportIdListingIdRoute =
+  AppSportsSportIdListingIdRouteImport.update({
+    id: '/sports/$sportId/$listingId',
+    path: '/sports/$sportId/$listingId',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
 const AppLearnCourseIdLessonsLessonIdRoute =
   AppLearnCourseIdLessonsLessonIdRouteImport.update({
     id: '/lessons/$lessonId',
@@ -322,9 +371,15 @@ export interface FileRoutesByFullPath {
   '/events/mine': typeof AppEventsMineRoute
   '/learn/$courseId': typeof AppLearnCourseIdRouteWithChildren
   '/learn/mine': typeof AppLearnMineRoute
+  '/profile/add': typeof AppProfileAddRoute
   '/profile/edit': typeof AppProfileEditRoute
+  '/profile/emma': typeof AppProfileEmmaRoute
+  '/profile/media': typeof AppProfileMediaRoute
   '/profile/preview': typeof AppProfilePreviewRoute
+  '/profile/recruiting': typeof AppProfileRecruitingRoute
   '/profile/stats': typeof AppProfileStatsRoute
+  '/subscription/compare': typeof AppSubscriptionCompareRoute
+  '/subscription/manage': typeof AppSubscriptionManageRoute
   '/subscription/payment': typeof AppSubscriptionPaymentRoute
   '/subscription/success': typeof AppSubscriptionSuccessRoute
   '/subscription/upgrade': typeof AppSubscriptionUpgradeRoute
@@ -341,6 +396,8 @@ export interface FileRoutesByFullPath {
   '/teams/': typeof AppTeamsIndexRoute
   '/tournaments/': typeof AppTournamentsIndexRoute
   '/trainings/': typeof AppTrainingsIndexRoute
+  '/sports/$sportId/$listingId': typeof AppSportsSportIdListingIdRoute
+  '/sports/$sportId/': typeof AppSportsSportIdIndexRoute
   '/learn/$courseId/lessons/$lessonId': typeof AppLearnCourseIdLessonsLessonIdRoute
 }
 export interface FileRoutesByTo {
@@ -370,9 +427,15 @@ export interface FileRoutesByTo {
   '/events/mine': typeof AppEventsMineRoute
   '/learn/$courseId': typeof AppLearnCourseIdRouteWithChildren
   '/learn/mine': typeof AppLearnMineRoute
+  '/profile/add': typeof AppProfileAddRoute
   '/profile/edit': typeof AppProfileEditRoute
+  '/profile/emma': typeof AppProfileEmmaRoute
+  '/profile/media': typeof AppProfileMediaRoute
   '/profile/preview': typeof AppProfilePreviewRoute
+  '/profile/recruiting': typeof AppProfileRecruitingRoute
   '/profile/stats': typeof AppProfileStatsRoute
+  '/subscription/compare': typeof AppSubscriptionCompareRoute
+  '/subscription/manage': typeof AppSubscriptionManageRoute
   '/subscription/payment': typeof AppSubscriptionPaymentRoute
   '/subscription/success': typeof AppSubscriptionSuccessRoute
   '/subscription/upgrade': typeof AppSubscriptionUpgradeRoute
@@ -389,6 +452,8 @@ export interface FileRoutesByTo {
   '/teams': typeof AppTeamsIndexRoute
   '/tournaments': typeof AppTournamentsIndexRoute
   '/trainings': typeof AppTrainingsIndexRoute
+  '/sports/$sportId/$listingId': typeof AppSportsSportIdListingIdRoute
+  '/sports/$sportId': typeof AppSportsSportIdIndexRoute
   '/learn/$courseId/lessons/$lessonId': typeof AppLearnCourseIdLessonsLessonIdRoute
 }
 export interface FileRoutesById {
@@ -420,9 +485,15 @@ export interface FileRoutesById {
   '/_app/events/mine': typeof AppEventsMineRoute
   '/_app/learn/$courseId': typeof AppLearnCourseIdRouteWithChildren
   '/_app/learn/mine': typeof AppLearnMineRoute
+  '/_app/profile/add': typeof AppProfileAddRoute
   '/_app/profile/edit': typeof AppProfileEditRoute
+  '/_app/profile/emma': typeof AppProfileEmmaRoute
+  '/_app/profile/media': typeof AppProfileMediaRoute
   '/_app/profile/preview': typeof AppProfilePreviewRoute
+  '/_app/profile/recruiting': typeof AppProfileRecruitingRoute
   '/_app/profile/stats': typeof AppProfileStatsRoute
+  '/_app/subscription/compare': typeof AppSubscriptionCompareRoute
+  '/_app/subscription/manage': typeof AppSubscriptionManageRoute
   '/_app/subscription/payment': typeof AppSubscriptionPaymentRoute
   '/_app/subscription/success': typeof AppSubscriptionSuccessRoute
   '/_app/subscription/upgrade': typeof AppSubscriptionUpgradeRoute
@@ -439,6 +510,8 @@ export interface FileRoutesById {
   '/_app/teams/': typeof AppTeamsIndexRoute
   '/_app/tournaments/': typeof AppTournamentsIndexRoute
   '/_app/trainings/': typeof AppTrainingsIndexRoute
+  '/_app/sports/$sportId/$listingId': typeof AppSportsSportIdListingIdRoute
+  '/_app/sports/$sportId/': typeof AppSportsSportIdIndexRoute
   '/_app/learn/$courseId/lessons/$lessonId': typeof AppLearnCourseIdLessonsLessonIdRoute
 }
 export interface FileRouteTypes {
@@ -470,9 +543,15 @@ export interface FileRouteTypes {
     | '/events/mine'
     | '/learn/$courseId'
     | '/learn/mine'
+    | '/profile/add'
     | '/profile/edit'
+    | '/profile/emma'
+    | '/profile/media'
     | '/profile/preview'
+    | '/profile/recruiting'
     | '/profile/stats'
+    | '/subscription/compare'
+    | '/subscription/manage'
     | '/subscription/payment'
     | '/subscription/success'
     | '/subscription/upgrade'
@@ -489,6 +568,8 @@ export interface FileRouteTypes {
     | '/teams/'
     | '/tournaments/'
     | '/trainings/'
+    | '/sports/$sportId/$listingId'
+    | '/sports/$sportId/'
     | '/learn/$courseId/lessons/$lessonId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -518,9 +599,15 @@ export interface FileRouteTypes {
     | '/events/mine'
     | '/learn/$courseId'
     | '/learn/mine'
+    | '/profile/add'
     | '/profile/edit'
+    | '/profile/emma'
+    | '/profile/media'
     | '/profile/preview'
+    | '/profile/recruiting'
     | '/profile/stats'
+    | '/subscription/compare'
+    | '/subscription/manage'
     | '/subscription/payment'
     | '/subscription/success'
     | '/subscription/upgrade'
@@ -537,6 +624,8 @@ export interface FileRouteTypes {
     | '/teams'
     | '/tournaments'
     | '/trainings'
+    | '/sports/$sportId/$listingId'
+    | '/sports/$sportId'
     | '/learn/$courseId/lessons/$lessonId'
   id:
     | '__root__'
@@ -567,9 +656,15 @@ export interface FileRouteTypes {
     | '/_app/events/mine'
     | '/_app/learn/$courseId'
     | '/_app/learn/mine'
+    | '/_app/profile/add'
     | '/_app/profile/edit'
+    | '/_app/profile/emma'
+    | '/_app/profile/media'
     | '/_app/profile/preview'
+    | '/_app/profile/recruiting'
     | '/_app/profile/stats'
+    | '/_app/subscription/compare'
+    | '/_app/subscription/manage'
     | '/_app/subscription/payment'
     | '/_app/subscription/success'
     | '/_app/subscription/upgrade'
@@ -586,6 +681,8 @@ export interface FileRouteTypes {
     | '/_app/teams/'
     | '/_app/tournaments/'
     | '/_app/trainings/'
+    | '/_app/sports/$sportId/$listingId'
+    | '/_app/sports/$sportId/'
     | '/_app/learn/$courseId/lessons/$lessonId'
   fileRoutesById: FileRoutesById
 }
@@ -837,6 +934,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/profile/add': {
+      id: '/_app/profile/add'
+      path: '/profile/add'
+      fullPath: '/profile/add'
+      preLoaderRoute: typeof AppProfileAddRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/profile/edit': {
       id: '/_app/profile/edit'
       path: '/profile/edit'
@@ -844,11 +948,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileEditRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/profile/emma': {
+      id: '/_app/profile/emma'
+      path: '/profile/emma'
+      fullPath: '/profile/emma'
+      preLoaderRoute: typeof AppProfileEmmaRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/profile/media': {
+      id: '/_app/profile/media'
+      path: '/profile/media'
+      fullPath: '/profile/media'
+      preLoaderRoute: typeof AppProfileMediaRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/profile/preview': {
       id: '/_app/profile/preview'
       path: '/profile/preview'
       fullPath: '/profile/preview'
       preLoaderRoute: typeof AppProfilePreviewRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/profile/recruiting': {
+      id: '/_app/profile/recruiting'
+      path: '/profile/recruiting'
+      fullPath: '/profile/recruiting'
+      preLoaderRoute: typeof AppProfileRecruitingRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/profile/stats': {
@@ -863,6 +988,20 @@ declare module '@tanstack/react-router' {
       path: '/subscription'
       fullPath: '/subscription/'
       preLoaderRoute: typeof AppSubscriptionIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/subscription/compare': {
+      id: '/_app/subscription/compare'
+      path: '/subscription/compare'
+      fullPath: '/subscription/compare'
+      preLoaderRoute: typeof AppSubscriptionCompareRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/subscription/manage': {
+      id: '/_app/subscription/manage'
+      path: '/subscription/manage'
+      fullPath: '/subscription/manage'
+      preLoaderRoute: typeof AppSubscriptionManageRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/_app/subscription/payment': {
@@ -928,6 +1067,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTrainingsTrainingIdRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/sports/$sportId/': {
+      id: '/_app/sports/$sportId/'
+      path: '/sports/$sportId'
+      fullPath: '/sports/$sportId/'
+      preLoaderRoute: typeof AppSportsSportIdIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/_app/sports/$sportId/$listingId': {
+      id: '/_app/sports/$sportId/$listingId'
+      path: '/sports/$sportId/$listingId'
+      fullPath: '/sports/$sportId/$listingId'
+      preLoaderRoute: typeof AppSportsSportIdListingIdRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/learn/$courseId/lessons/$lessonId': {
       id: '/_app/learn/$courseId/lessons/$lessonId'
       path: '/lessons/$lessonId'
@@ -965,9 +1118,15 @@ interface AppRouteRouteChildren {
   AppEventsMineRoute: typeof AppEventsMineRoute
   AppLearnCourseIdRoute: typeof AppLearnCourseIdRouteWithChildren
   AppLearnMineRoute: typeof AppLearnMineRoute
+  AppProfileAddRoute: typeof AppProfileAddRoute
   AppProfileEditRoute: typeof AppProfileEditRoute
+  AppProfileEmmaRoute: typeof AppProfileEmmaRoute
+  AppProfileMediaRoute: typeof AppProfileMediaRoute
   AppProfilePreviewRoute: typeof AppProfilePreviewRoute
+  AppProfileRecruitingRoute: typeof AppProfileRecruitingRoute
   AppProfileStatsRoute: typeof AppProfileStatsRoute
+  AppSubscriptionCompareRoute: typeof AppSubscriptionCompareRoute
+  AppSubscriptionManageRoute: typeof AppSubscriptionManageRoute
   AppSubscriptionPaymentRoute: typeof AppSubscriptionPaymentRoute
   AppSubscriptionSuccessRoute: typeof AppSubscriptionSuccessRoute
   AppSubscriptionUpgradeRoute: typeof AppSubscriptionUpgradeRoute
@@ -984,6 +1143,8 @@ interface AppRouteRouteChildren {
   AppTeamsIndexRoute: typeof AppTeamsIndexRoute
   AppTournamentsIndexRoute: typeof AppTournamentsIndexRoute
   AppTrainingsIndexRoute: typeof AppTrainingsIndexRoute
+  AppSportsSportIdListingIdRoute: typeof AppSportsSportIdListingIdRoute
+  AppSportsSportIdIndexRoute: typeof AppSportsSportIdIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
@@ -1002,9 +1163,15 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppEventsMineRoute: AppEventsMineRoute,
   AppLearnCourseIdRoute: AppLearnCourseIdRouteWithChildren,
   AppLearnMineRoute: AppLearnMineRoute,
+  AppProfileAddRoute: AppProfileAddRoute,
   AppProfileEditRoute: AppProfileEditRoute,
+  AppProfileEmmaRoute: AppProfileEmmaRoute,
+  AppProfileMediaRoute: AppProfileMediaRoute,
   AppProfilePreviewRoute: AppProfilePreviewRoute,
+  AppProfileRecruitingRoute: AppProfileRecruitingRoute,
   AppProfileStatsRoute: AppProfileStatsRoute,
+  AppSubscriptionCompareRoute: AppSubscriptionCompareRoute,
+  AppSubscriptionManageRoute: AppSubscriptionManageRoute,
   AppSubscriptionPaymentRoute: AppSubscriptionPaymentRoute,
   AppSubscriptionSuccessRoute: AppSubscriptionSuccessRoute,
   AppSubscriptionUpgradeRoute: AppSubscriptionUpgradeRoute,
@@ -1021,6 +1188,8 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppTeamsIndexRoute: AppTeamsIndexRoute,
   AppTournamentsIndexRoute: AppTournamentsIndexRoute,
   AppTrainingsIndexRoute: AppTrainingsIndexRoute,
+  AppSportsSportIdListingIdRoute: AppSportsSportIdListingIdRoute,
+  AppSportsSportIdIndexRoute: AppSportsSportIdIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

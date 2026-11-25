@@ -9,6 +9,13 @@ import banner from "@/assets/images/banners/home.jpg";
 import approach from "@/assets/images/courses/approach.jpg";
 import court from "@/assets/images/courses/court.jpg";
 import empty from "@/assets/images/empty-states/roster.jpg";
+import northshoreOutfield from "@/assets/images/teams/northshore-outfield.jpg";
+import northshorePitcher from "@/assets/images/teams/northshore-pitcher.jpg";
+import harborSoftball from "@/assets/images/teams/harbor-softball.jpg";
+import summitBasketball from "@/assets/images/teams/summit-basketball.jpg";
+import piedmontSoccer from "@/assets/images/teams/piedmont-soccer.jpg";
+import lakeshoreVolleyball from "@/assets/images/teams/lakeshore-volleyball.jpg";
+import riverCityInfield from "@/assets/images/teams/river-city-infield.jpg";
 import type { Course } from "@/lib/types";
 
 export const images = {
@@ -37,9 +44,29 @@ export function courseImage(key: Course["image"]) {
   return courseImages[key];
 }
 
+const teamImages: Record<string, string> = {
+  t1: northshoreOutfield,
+  t2: harborSoftball,
+  t3: summitBasketball,
+  t4: piedmontSoccer,
+  t5: lakeshoreVolleyball,
+  t6: riverCityInfield,
+};
+
+const openingImages: Record<string, string> = {
+  o1: northshoreOutfield,
+  o2: northshorePitcher,
+  o3: harborSoftball,
+  o4: summitBasketball,
+  o5: piedmontSoccer,
+  o6: lakeshoreVolleyball,
+  o7: riverCityInfield,
+};
+
 export function teamCover(id: string) {
-  const pool = [banner, approach, court, discover, skills];
-  let n = 0;
-  for (const ch of id) n += ch.charCodeAt(0);
-  return pool[n % pool.length] ?? banner;
+  return teamImages[id] ?? northshoreOutfield;
+}
+
+export function openingCover(id: string) {
+  return openingImages[id] ?? teamCover("t1");
 }

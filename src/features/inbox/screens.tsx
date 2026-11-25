@@ -4,6 +4,8 @@ import { coaches, courses, events, teams } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import type { NoticeCategory } from "@/lib/types";
 import { formatShort } from "@/lib/format";
+import { PremiumLock } from "@/components/athlete/PremiumLock";
+import { isPremium } from "@/lib/premium";
 import { Btn, Chip, ChipRow, EmptyState, Page, PullToRefresh, SearchField, useListState } from "@/components/athlete/ui";
 
 const categories: Array<NoticeCategory | "All"> = ["All", "Applications", "Messages", "Events", "Teams", "System"];
@@ -20,6 +22,14 @@ export function NotificationsScreen() {
     if (key in prefs && prefs[key] === false && category === "All") return false;
     return true;
   });
+
+  if (!isPremium()) {
+    return (
+      <Page title="Notifications">
+        <PremiumLock title="Notifications" />
+      </Page>
+    );
+  }
 
   return (
     <Page

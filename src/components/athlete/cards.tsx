@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin } from "lucide-react";
 import { coaches, teams } from "@/lib/mock-data";
-import { teamCover, courseImage } from "@/lib/images";
+import { courseImage, openingCover, teamCover } from "@/lib/images";
 import { formatShort, statusClass, statusLabel } from "@/lib/format";
 import type { Application, Course, Opening, SportEvent, Team } from "@/lib/types";
 import { Badge } from "@/components/athlete/ui";
@@ -14,7 +14,7 @@ export function TeamCard({ team, opening }: { team: Team; opening?: Opening }) {
       params={{ teamId: team.id }}
       className="block overflow-hidden rounded-3xl bg-card ring-1 ring-border"
     >
-      <img src={teamCover(team.id)} alt="" className="h-36 w-full object-cover" />
+      <img src={opening ? openingCover(opening.id) : teamCover(team.id)} alt="" className="h-36 w-full object-cover" />
       <div className="space-y-2 p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">

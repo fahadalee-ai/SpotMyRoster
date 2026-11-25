@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { coaches } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
 import { formatWhen } from "@/lib/format";
+import { PremiumLock } from "@/components/athlete/PremiumLock";
+import { isPremium } from "@/lib/premium";
 import { Avatar, BottomSheet, Btn, Chip, EmptyState, Page, PullToRefresh, SearchField, useListState } from "@/components/athlete/ui";
 
 export function ChatListScreen() {
@@ -21,8 +23,16 @@ export function ChatListScreen() {
     })
     .filter((row) => !query || `${row.coach?.name ?? ""} ${row.latest?.body ?? ""}`.toLowerCase().includes(query.toLowerCase()));
 
+  if (!isPremium()) {
+    return (
+      <Page title="Messages" back={false}>
+        <PremiumLock title="Messages" />
+      </Page>
+    );
+  }
+
   return (
-    <Page title="Chat" back={false}>
+    <Page title="Messages" back={false}>
       <PullToRefresh onRefresh={list.refresh}>
         <SearchField value={query} onChange={setQuery} placeholder="Search conversations" />
         <div className="mt-4 space-y-2">
@@ -67,6 +77,10 @@ export function ChatThreadScreen({ conversationId }: { conversationId: string })
     );
     if (unread) markConversationRead(conversation.id);
   }, [conversation, messages, markConversationRead]);
+
+  if (!isPremium()) {
+    return <Page title="Messages"><PremiumLock title="Messages" /></Page>;
+  }
 
   if (!conversation || !coach || !athlete) {
     return <Page title="Chat"><EmptyState title="Conversation not found" body="It may belong to another athlete." to="/chat" action="All chats" /></Page>;

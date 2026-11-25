@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { EditProfileScreen } from "@/features/profile/screens";
+import { EditAthleteScreen } from "@/features/profile/my-athlete";
 
 export const Route = createFileRoute("/_app/profile/edit")({
-  component: EditProfileScreen,
+  component: EditAthleteScreen,
 });

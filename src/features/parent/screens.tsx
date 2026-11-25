@@ -1,27 +1,24 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { Zap } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { parentPlan, statSports, tournaments, trainings } from "@/lib/parent-catalog";
 import { teams } from "@/lib/mock-data";
 import { useApp } from "@/lib/store";
-import { readJson, writeJson, readStorage, writeStorage } from "@/lib/storage";
+import { isPremium, setPremium } from "@/lib/premium";
+import { readJson, writeJson } from "@/lib/storage";
 import { statusLabel } from "@/lib/format";
 import { Btn, Chip, ChipRow, EmptyState, Page, TextArea, TextField } from "@/components/athlete/ui";
 
-const PREMIUM_KEY = "smr-parent-premium";
 const INQUIRY_KEY = "smr-inquiries";
 
 type Inquiry = { id: string; title: string; detail: string; status: string };
 
-function isPremium() {
-  return readStorage(PREMIUM_KEY) === "1";
-}
-
 export function DiscoverScreen() {
   const sports = ["Baseball", "Softball", "Basketball", "Soccer", "Volleyball"];
   return (
-    <Page title="Discover">
-      <p className="text-sm leading-relaxed text-muted-foreground">Where athletes and elite teams connect. Discover travel teams by sport, age, and location.</p>
+    <Page title="Everything open near you">
+      <p className="text-sm leading-relaxed">Browse by sport or scan the latest listings within 15 miles of Oakland.</p>
       <h2 className="mb-3 mt-6 font-display text-lg font-semibold">Sports</h2>
       <div className="grid grid-cols-2 gap-2">
         {sports.map((sport) => (
@@ -30,20 +27,23 @@ export function DiscoverScreen() {
           </Link>
         ))}
       </div>
-      <h2 className="mb-3 mt-6 font-display text-lg font-semibold">Featured teams</h2>
+      <h2 className="mb-3 mt-6 font-display text-lg font-semibold">Find a team</h2>
       <div className="space-y-3">
-        {teams.slice(0, 3).map((team) => (
-          <Link key={team.id} to="/teams/$teamId" params={{ teamId: team.id }} className="block rounded-3xl bg-card p-4 ring-1 ring-border">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{team.sport} · {team.ageGroup}</p>
-            <p className="mt-1 font-display text-lg font-semibold">{team.name}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{team.city}, {team.state}</p>
+        {[
+          ["Northstar United", "Soccer", "U14", "Boys", "Bellevue, WA", "Roster opening"],
+          ["Lake Union Juniors", "Girls", "Seattle, WA", "Featured"],
+          ["Rain City Select", "Co-ed", "Featured"],
+        ].map((row) => (
+          <Link key={row[0]} to="/teams" className="block rounded-3xl bg-card p-4 ring-1 ring-border">
+            <p className="font-display text-lg font-semibold">{row[0]}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{row.slice(1).join(" · ")}</p>
           </Link>
         ))}
       </div>
       <Link to="/subscription" className="mt-4 block rounded-3xl bg-[#162830] p-4 text-white">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#00E5FF]">Premium plan</p>
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#00E5FF]"><Zap size={14} /> Premium Plan</p>
         <p className="mt-1 font-display text-lg font-semibold">Unlock Parent & Athlete Premium</p>
-        <p className="mt-1 text-sm text-white/75">{parentPlan.price} yearly · highlighted profile, alerts, and up to 3 athletes</p>
+        <p className="mt-1 text-sm text-white/75">$9.99 yearly</p>
       </Link>
     </Page>
   );
@@ -54,8 +54,8 @@ export function OpportunitiesScreen() {
   const inquiries = readJson<Inquiry[]>(INQUIRY_KEY) ?? [];
   const mine = applications.filter((item) => item.athleteId === athlete?.id);
   return (
-    <Page title="My opportunities">
-      <p className="mb-4 text-sm leading-relaxed text-muted-foreground">Everything you’ve applied to or asked about, with the latest status from each organizer.</p>
+    <Page title="Registrations & inquiries">
+      <p className="mb-4 text-sm leading-relaxed">Everything you've applied to or asked about, with the latest status from each organizer.</p>
       {mine.length === 0 && inquiries.length === 0 ? (
         <EmptyState title="No opportunities yet" body="Apply to a roster spot or send an inquiry from a tournament." to="/teams" action="Find a team" />
       ) : (
@@ -83,8 +83,9 @@ export function OpportunitiesScreen() {
 
 export function TrainingsScreen() {
   return (
-    <Page title="Trainings">
-      <p className="text-sm text-muted-foreground">Camps, clinics, and private lessons near Oakland, CA.</p>
+    <Page title="Available trainings">
+      <p className="text-sm">Search by sport, skill, coach, or location</p>
+      <p className="mt-1 text-sm text-muted-foreground">near Oakland, CA</p>
       <p className="mt-1 text-sm font-semibold">{trainings.length} trainings</p>
       <div className="mt-4 space-y-3">
         {trainings.map((item) => (
@@ -176,27 +177,173 @@ export function TournamentDetailScreen({ tournamentId }: { tournamentId: string 
   );
 }
 
+const compareRows = [
+  ["Browse teams, tryouts, and camps", true, true],
+  ["Athlete profile", true, true],
+  ["Save listings and send inquiries", true, true],
+  ["Messages with organizers", false, true],
+  ["Notifications", false, true],
+  ["Highlighted athlete profile", false, true],
+  ["Up to 3 athlete profiles", false, true],
+  ["Email and text alerts", false, true],
+] as const;
+
+function usePlan() {
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    setActive(isPremium());
+  }, []);
+  return active;
+}
+
 export function SubscriptionScreen() {
-  const active = isPremium();
+  const active = usePlan();
   return (
-    <Page title="Membership">
-      <div className="rounded-3xl bg-[#162830] p-5 text-white">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#00E5FF]">{active ? "Active on this device" : "Parent & Athlete Premium"}</p>
-        <p className="mt-2 font-display text-[1.7rem] font-semibold leading-tight">{parentPlan.price} <span className="text-base font-medium text-white/70">{parentPlan.period}</span></p>
-        <p className="mt-2 text-sm text-white/75">Highlighted profile, alerts, and up to 3 athlete profiles.</p>
+    <Page title="Subscription">
+      <p className="text-xs font-semibold uppercase tracking-wide text-primary">Current plan</p>
+      <div className="mt-2 rounded-3xl bg-card p-5 ring-1 ring-border">
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-display text-xl font-semibold uppercase leading-tight">{active ? parentPlan.name : "Free"}</p>
+          <span className="rounded-full bg-primary px-2 py-1 text-[10px] font-semibold uppercase text-primary-foreground">Current</span>
+        </div>
+        <p className="mt-3 font-display text-3xl font-semibold">{active ? parentPlan.price : "Free"}</p>
+        <p className="text-sm text-muted-foreground">{active ? "Billed yearly. Nothing was charged in this preview." : "Parent account. Upgrade when you want messages and alerts."}</p>
       </div>
-      <ul className="mt-4 space-y-2">
-        {parentPlan.features.map((feature) => (
-          <li key={feature} className="rounded-2xl bg-card px-4 py-3 text-sm ring-1 ring-border">{feature}</li>
+      <h2 className="mb-2 mt-5 font-display text-sm font-semibold uppercase tracking-wide">Included now</h2>
+      <ul className="space-y-2">
+        {compareRows.filter((row) => (active ? row[2] : row[1])).map((row) => (
+          <li key={row[0]} className="rounded-2xl bg-card px-4 py-3 text-sm ring-1 ring-border">{row[0]}</li>
         ))}
       </ul>
+      <div className="mt-5 grid gap-2">
+        <Link to="/subscription/compare" className="flex min-h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground">
+          Compare plans
+        </Link>
+        {active ? (
+          <Link to="/subscription/manage" className="flex min-h-11 items-center justify-center rounded-full bg-elevated px-4 text-sm font-semibold ring-1 ring-border">
+            Manage plan
+          </Link>
+        ) : (
+          <Link to="/subscription/upgrade" className="flex min-h-11 items-center justify-center rounded-full bg-elevated px-4 text-sm font-semibold ring-1 ring-border">
+            Upgrade to Parent Premium
+          </Link>
+        )}
+      </div>
+    </Page>
+  );
+}
+
+export function ComparePlansScreen() {
+  const active = usePlan();
+  const [choice, setChoice] = useState<"free" | "premium">("premium");
+  useEffect(() => {
+    setChoice(active ? "premium" : "free");
+  }, [active]);
+  return (
+    <Page title="Compare plans">
+      <p className="text-sm text-muted-foreground">Free and Parent & Athlete Premium are the two plans in this account.</p>
+      <div className="mt-4 grid gap-2">
+        <PlanChoice
+          selected={choice === "free"}
+          current={active === false}
+          name="Free"
+          price="Free"
+          detail="Parent account"
+          onClick={() => setChoice("free")}
+        />
+        <PlanChoice
+          selected={choice === "premium"}
+          current={active}
+          name={parentPlan.name}
+          price={parentPlan.price}
+          detail="Yearly"
+          onClick={() => setChoice("premium")}
+        />
+      </div>
+      <div className="mt-4 overflow-hidden rounded-3xl bg-card ring-1 ring-border">
+        <div className="grid grid-cols-[1fr_3.25rem_4.5rem] gap-2 border-b border-border px-3 py-3 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+          <span>Feature</span>
+          <span className="text-center">Free</span>
+          <span className="text-center">Premium</span>
+        </div>
+        {compareRows.map((row) => (
+          <div key={row[0]} className="grid grid-cols-[1fr_3.25rem_4.5rem] items-center gap-2 border-b border-border px-3 py-3 text-sm last:border-b-0">
+            <span>{row[0]}</span>
+            <Mark on={row[1]} />
+            <Mark on={row[2]} />
+          </div>
+        ))}
+      </div>
+      <div className="mt-5">
+        {choice === "premium" && !active && (
+          <Link to="/subscription/upgrade" className="flex min-h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground">
+            Continue with Premium
+          </Link>
+        )}
+        {choice === "premium" && active && (
+          <Link to="/subscription" className="flex min-h-11 items-center justify-center rounded-full bg-elevated px-4 text-sm font-semibold ring-1 ring-border">
+            You’re on Premium
+          </Link>
+        )}
+        {choice === "free" && active && (
+          <Link to="/subscription/manage" className="flex min-h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground">
+            Switch to Free
+          </Link>
+        )}
+        {choice === "free" && !active && (
+          <Link to="/subscription" className="flex min-h-11 items-center justify-center rounded-full bg-elevated px-4 text-sm font-semibold ring-1 ring-border">
+            You’re on Free
+          </Link>
+        )}
+      </div>
+    </Page>
+  );
+}
+
+function PlanChoice({ selected, current, name, price, detail, onClick }: { selected: boolean; current: boolean; name: string; price: string; detail: string; onClick: () => void }) {
+  return (
+    <button type="button" onClick={onClick} className={`rounded-3xl p-4 text-left ring-1 ${selected ? "bg-primary text-primary-foreground ring-transparent" : "bg-card ring-border"}`}>
+      <span className="flex items-center justify-between gap-2">
+        <span className="font-display text-lg font-semibold uppercase leading-tight">{name}</span>
+        {current && <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${selected ? "bg-background text-foreground" : "bg-primary text-primary-foreground"}`}>Current</span>}
+      </span>
+      <span className="mt-2 block font-display text-2xl font-semibold">{price}</span>
+      <span className={`mt-1 block text-sm ${selected ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{detail}</span>
+    </button>
+  );
+}
+
+function Mark({ on }: { on: boolean }) {
+  return <span className={`text-center text-sm font-semibold ${on ? "text-primary" : "text-muted-foreground"}`}>{on ? "Yes" : "—"}</span>;
+}
+
+export function ManagePlanScreen() {
+  const navigate = useNavigate();
+  const active = usePlan();
+  return (
+    <Page title="Manage plan">
+      <h1 className="font-display text-[1.7rem] font-semibold uppercase leading-tight">{active ? parentPlan.name : "Free"}</h1>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        {active
+          ? "Turning Premium off keeps the parent account and removes messages and notifications on this device. No refund is processed because no card was charged."
+          : "This account is already on the Free plan."}
+      </p>
       {active ? (
-        <Btn className="mt-4" full onClick={() => { writeStorage(PREMIUM_KEY, "0"); toast("Premium turned off on this device"); }}>
-          Turn off on this device
+        <Btn
+          className="mt-5"
+          full
+          variant="danger"
+          onClick={() => {
+            setPremium(false);
+            toast("Switched to the Free plan on this device");
+            navigate({ to: "/subscription" });
+          }}
+        >
+          Switch to Free
         </Btn>
       ) : (
-        <Link to="/subscription/upgrade" className="mt-4 flex min-h-11 items-center justify-center rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground">
-          Upgrade now
+        <Link to="/subscription/compare" className="mt-5 flex min-h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground">
+          Compare plans
         </Link>
       )}
     </Page>
@@ -209,7 +356,7 @@ export function UpgradeScreen() {
   return (
     <Page title="Upgrade">
       <h1 className="font-display text-[1.7rem] font-semibold leading-tight">Upgrade to Parent Premium</h1>
-      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">You are reviewing {parentPlan.name} for {name || "this account"}.</p>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">You are upgrading {name || "Jordan Davis"} (Parent Account) to a Premium Athlete Membership.</p>
       <div className="mt-4 rounded-3xl bg-card p-4 ring-1 ring-border">
         <div className="flex items-center justify-between gap-3 text-sm">
           <span>Parent Premium, 1 year</span>
@@ -245,7 +392,7 @@ export function PaymentScreen() {
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          writeStorage(PREMIUM_KEY, "1");
+          setPremium(true);
           setCard("");
           toast("Membership marked active on this device");
           navigate({ to: "/subscription/success", replace: true });
@@ -269,7 +416,10 @@ export function PaymentSuccessScreen() {
         <h1 className="mt-2 font-display text-[1.7rem] font-semibold leading-tight">Your premium benefits are active on this device.</h1>
         <p className="mt-2 text-sm text-white/75">Discovery, a highlighted profile, and organizer messages are unlocked in this preview. No charge was made.</p>
       </div>
-      <Link to="/home" className="mt-4 flex min-h-11 items-center justify-center rounded-2xl bg-primary px-4 text-sm font-semibold text-primary-foreground">Go to home</Link>
+      <div className="mt-4 grid gap-2">
+        <Link to="/subscription" className="flex min-h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground">View current plan</Link>
+        <Link to="/home" className="flex min-h-11 items-center justify-center rounded-full bg-elevated px-4 text-sm font-semibold ring-1 ring-border">Go to home</Link>
+      </div>
     </Page>
   );
 }
@@ -306,6 +456,21 @@ export function StatsScreen() {
         ))}
       </div>
       <Link to="/profile/edit" className="mt-4 flex min-h-11 items-center justify-center rounded-2xl bg-elevated px-4 text-sm font-semibold ring-1 ring-border">Edit athlete</Link>
+    </Page>
+  );
+}
+
+export function EmmaProfileScreen() {
+  return (
+    <Page title="Emma Davis">
+      <h1 className="font-display text-[1.7rem] font-semibold leading-tight">Emma Davis</h1>
+      <p className="mt-2 text-sm">Emma Davis U14</p>
+      <p className="mt-1 text-sm">Baseball</p>
+      <p className="mt-1 text-sm">Charlotte, NC</p>
+      <p className="mt-3 inline-flex rounded-full bg-primary px-3 py-1 text-sm font-semibold text-primary-foreground">92% Match</p>
+      <h2 className="mb-2 mt-6 font-display text-lg font-semibold">Parent / guardian</h2>
+      <p className="text-sm">Sarah Davis</p>
+      <p className="mt-2 text-sm text-muted-foreground">Contact details are shared once the parent replies.</p>
     </Page>
   );
 }
